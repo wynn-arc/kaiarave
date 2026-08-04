@@ -234,3 +234,88 @@ h4 {
     from { top: -2rem; }
     to { top: 300px; }
 }
+
+.logo-container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 1rem auto 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Vinyl record, hidden behind the logo by default */
+.vinyl {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle, #111 0px, #111 2px, #292929 3px, #111 4px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0;
+    z-index: 1;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.vinyl::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 36px;
+    height: 36px;
+    background: #ff9ecb;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.logo-img {
+    position: relative;
+    z-index: 2;
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transition: transform 0.4s ease;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Spotify embed, hidden to the right until hover */
+.spotify-embed {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%) translateX(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 3;
+}
+
+/* Hover state */
+.logo-container:hover .logo-img {
+    transform: translateX(-35px) rotate(-6deg);
+}
+
+.logo-container:hover .vinyl {
+    opacity: 1;
+    transform: translate(-20%, -50%) scale(1);
+    animation: spin 4s linear infinite;
+}
+
+.logo-container:hover .spotify-embed {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) translateX(40px);
+}
+
+@keyframes spin {
+    from { transform: translate(-20%, -50%) rotate(0deg); }
+    to   { transform: translate(-20%, -50%) rotate(360deg); }
+}
