@@ -279,7 +279,6 @@ h4 {
     z-index: 3;
 }
 
-/* Hover state */
 .logo-container:hover .logo-img {
     transform: translateX(-35px) rotate(-6deg);
 }
@@ -301,7 +300,7 @@ h4 {
     to   { transform: translate(-20%, -50%) rotate(360deg); }
 }
 
-/* ===== Mobile responsive ===== */
+/* forda Mobile responsive */
 @media (max-width: 600px) {
     .navbar {
         position: static;
