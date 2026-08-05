@@ -25,4 +25,36 @@ function loadRandomSong() {
 }
 
 const logoContainer = document.querySelector(".logo-container");
-logoContainer.addEventListener("mouseenter", loadRandomSong);
+if (logoContainer) {
+    logoContainer.addEventListener("mouseenter", loadRandomSong);
+}
+
+//ABOUT US JS
+const adminCards = document.querySelectorAll(".admin-card");
+const modalOverlay = document.getElementById("admin-modal-overlay");
+const modalImg = document.getElementById("admin-modal-img");
+const modalRole = document.getElementById("admin-modal-role");
+const modalName = document.getElementById("admin-modal-name");
+const modalDesc = document.getElementById("admin-modal-desc");
+const modalClose = document.getElementById("admin-modal-close");
+
+adminCards.forEach(card => {
+    card.addEventListener("click", () => {
+        modalImg.src = card.querySelector(".admin-thumb-img").src;
+        modalImg.alt = card.dataset.name;
+        modalRole.textContent = card.dataset.role;
+        modalName.textContent = card.dataset.name;
+        modalDesc.textContent = card.dataset.desc;
+        modalOverlay.classList.add("active");
+    });
+});
+
+modalClose.addEventListener("click", () => {
+    modalOverlay.classList.remove("active");
+});
+
+modalOverlay.addEventListener("click", (e) => {
+    if (e.target === modalOverlay) {
+        modalOverlay.classList.remove("active");
+    }
+});
