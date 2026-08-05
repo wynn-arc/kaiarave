@@ -1,4 +1,5 @@
-# **Main Deployed Site is kaiarave.vercel.app**
+# **Main Deployed Site is**
+*kaiarave.vercel.app*
 
-### push for edits
-### do wtvr
+1. push for edits
+2. add whatever
