@@ -1299,6 +1299,9 @@ h4 {
 
     .stem-node a {
         transform: none;
+        white-space: normal;
+        text-align: center;
+        max-width: 260px;
     }
 
     .stem-node a:hover {
@@ -1309,6 +1312,82 @@ h4 {
         width: 130px;
         height: 130px;
         margin-bottom: 0.5rem;
+    }
+
+    .album-overlay {
+        padding: 2.5rem 1rem 1rem;
+        align-items: flex-start;
+        overflow-y: auto;
+    }
+
+    .album-expanded {
+        max-width: 100%;
+    }
+
+    .album-close {
+        top: -2.25rem;
+        right: 0;
+    }
+}
+
+/* ===== Extra-small phones ===== */
+@media (max-width: 420px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .songs-intro p {
+        font-size: 0.9rem;
+    }
+
+    .album-card {
+        height: 90px;
+    }
+
+    .album-card:hover,
+    .album-card:focus-visible {
+        height: 140px;
+    }
+
+    .album-cover-wrap,
+    .album-cover-back,
+    .album-cover {
+        width: 64px;
+        height: 64px;
+    }
+
+    .album-cover {
+        font-size: 1.6rem;
+    }
+
+    .album-title {
+        font-size: 0.85rem;
+        bottom: 0.75rem;
+    }
+
+    .album-hint {
+        font-size: 0.6rem;
+        bottom: 0.4rem;
+    }
+
+    .album-cover-big-wrap,
+    .album-cover-back-big,
+    .album-cover-big {
+        width: 110px;
+        height: 110px;
+    }
+
+    .album-cover-big {
+        font-size: 2.4rem;
+    }
+
+    .expanded-title {
+        font-size: 1.25rem;
+    }
+
+    .stem-node a {
+        font-size: 0.75rem;
+        padding: 0.45rem 0.8rem;
     }
 }
 /* ===== Pertinent Links page ===== */
