@@ -520,6 +520,249 @@ h4 {
     line-height: 1.6;
 }
 
+/* ===== Members grid (video-style cards) ===== */
+.members-wrap {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto 3rem;
+    padding: 1.5rem 2rem;
+}
+
+.members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.75rem;
+}
+
+.member-card {
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    background: transparent;
+    transition: transform 0.25s ease;
+}
+
+.member-card:hover {
+    transform: translateY(-6px);
+}
+
+.member-thumb-img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    margin: 0;
+    transition: transform 0.3s ease;
+}
+
+.member-card:hover .member-thumb-img {
+    transform: none;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
+
+.member-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    text-align: left;
+}
+
+.member-avatar-sm {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow: none;
+    margin: 0;
+}
+
+.member-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+}
+
+.member-role {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* ===== Watch page (member detail) ===== */
+.watch-wrap {
+    width: 100%;
+    max-width: 1300px;
+    margin: 6rem auto 3rem;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 2rem;
+    align-items: start;
+    text-align: left;
+}
+
+.watch-main {
+    max-width: 700px;
+}
+
+.watch-main-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 8 / 4;
+    object-fit: cover;
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    margin: 0 0 1rem;
+}
+
+.watch-title {
+    margin: 0 0 0.75rem;
+    font-size: 1.6rem;
+    text-align: left;
+}
+
+.watch-channel-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.watch-avatar {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.watch-role {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.watch-socials {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.watch-desc-box {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+    border-radius: 14px;
+    padding: 1.1rem 1.4rem;
+}
+
+.watch-desc-box p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* Sidebar */
+.watch-sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+.watch-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.85;
+    margin-bottom: 1rem;
+    transition: opacity 0.2s ease;
+}
+
+.watch-back:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.sidebar-heading {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.sidebar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.sidebar-card {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: #fff;
+    padding: 0.35rem;
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.sidebar-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.sidebar-thumb-wrap {
+    width: 200px;
+    height: 113px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+}
+
+.sidebar-card-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.sidebar-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-role {
+    font-size: 0.72rem;
+    opacity: 0.75;
+}
+
 /* ===== Mobile responsive ===== */
 @media (max-width: 600px) {
     .navbar {
@@ -628,5 +871,1028 @@ h4 {
 
     .admin-modal {
         padding: 1.5rem;
+    }
+
+    .members-wrap {
+        padding: 1rem;
+    }
+
+    .members-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .watch-wrap {
+        grid-template-columns: 1fr;
+        padding: 0 1.25rem;
+        margin-top: 2rem;
+    }
+
+    .sidebar-thumb-wrap {
+        width: 120px;
+        height: 68px;
+    }
+}
+/* ===== Songs to Stream page ===== */
+.songs-intro {
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    padding: 0 1.5rem;
+}
+
+.songs-intro p {
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.songs-wrap {
+    max-width: 1300px;
+    width: 100%;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+}
+
+.albums-grid {
+    display: flex;
+    width: 100%;
+    height: 560px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+}
+
+.album-card {
+    position: relative;
+    cursor: pointer;
+    background: var(--album-color, #a78bfa);
+    flex: 1 1 0;
+    min-width: 50px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    outline: none;
+    overflow: hidden;
+    transition: flex 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.album-card:hover,
+.album-card:focus-visible {
+    flex: 2.4 1 0;
+}
+
+.album-cover-wrap {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    z-index: 2;
+}
+
+.album-cover-back {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.35);
+    background-size: cover;
+    background-position: center;
+    border: 3px dashed rgba(255, 255, 255, 0.7);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0;
+    z-index: 1;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    /* This circle sits behind the CD icon — swap in the real album art here:
+       background-image: url('albumcovers/neon-dreams.jpg');
+       background-size: cover;
+       background-position: center; */
+}
+
+.album-card:hover .album-cover-back,
+.album-card:focus-visible .album-cover-back {
+    opacity: 1;
+    transform: translate(-70%, -50%) scale(1);
+}
+
+.album-cover {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+    background: rgba(255, 255, 255, 0.25);
+    border: 4px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    transition: transform 0.4s ease;
+    /* Or swap the art in here instead, and drop .album-cover-back entirely:
+       background-image: url('albumcovers/neon-dreams.jpg');
+       background-size: cover;
+       background-position: center; */
+}
+
+.album-card:hover .album-cover,
+.album-card:focus-visible .album-cover {
+    transform: translateX(12%) scale(1.05);
+}
+
+.album-title {
+    position: absolute;
+    bottom: 1.75rem;
+    left: 50%;
+    transform: translate(-50%, 10px);
+    width: 85%;
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.album-card:hover .album-title,
+.album-card:focus-visible .album-title {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.album-hint {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.68rem;
+    opacity: 0;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: opacity 0.3s ease 0.05s;
+}
+
+.album-card:hover .album-hint,
+.album-card:focus-visible .album-hint {
+    opacity: 0.8;
+}
+
+.album-songs {
+    display: none;
+}
+
+/* Expanded album overlay */
+.album-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.album-overlay-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: albumFadeIn 0.3s ease;
+}
+
+.album-expanded {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: albumPopIn 0.35s ease;
+}
+
+.album-close {
+    position: absolute;
+    top: -3rem;
+    right: -0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #fff;
+    font-size: 1.8rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    line-height: 1;
+}
+
+.album-close:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.08);
+}
+
+.stem-wrap {
+    position: relative;
+    width: 460px;
+    max-width: 90vw;
+    height: 460px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.album-cover-big-wrap {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    z-index: 3;
+}
+
+.album-cover-back-big {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.35);
+    background-size: cover;
+    background-position: center;
+    border: 3px dashed rgba(255, 255, 255, 0.7);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    transform: translate(-70%, -50%);
+    z-index: 1;
+    /* Swap in the real album art here, same as .album-cover-back */
+}
+
+.album-cover-big {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 5px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 0 40px var(--album-color, #a78bfa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    z-index: 2;
+    /* Or swap the art in here instead, and drop .album-cover-back-big entirely */
+}
+
+.stem-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 150px;
+    background: rgba(255, 255, 255, 0.5);
+    transform-origin: top center;
+    transform: translate(-50%, 0) rotate(calc(360deg / var(--total) * var(--i)));
+    z-index: 1;
+    opacity: 0;
+    animation: growStem 0.4s ease forwards;
+    animation-delay: calc(var(--i) * 0.07s);
+}
+
+.stem-node {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    transform: rotate(calc(360deg / var(--total) * var(--i))) translate(0, 190px);
+    z-index: 2;
+    opacity: 0;
+    animation: popStem 0.4s ease forwards;
+    animation-delay: calc(var(--i) * 0.07s + 0.1s);
+}
+
+.stem-node a {
+    display: inline-block;
+    transform: translate(-50%, -50%) rotate(calc(-360deg / var(--total) * var(--i)));
+    background: rgba(255, 255, 255, 0.92);
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.stem-node a:hover {
+    background: #fff;
+    transform: translate(-50%, -50%) rotate(calc(-360deg / var(--total) * var(--i))) scale(1.1);
+}
+
+.expanded-title {
+    margin-top: 1.5rem;
+    font-size: 1.5rem;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes albumFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes albumPopIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes growStem {
+    from { opacity: 0; height: 0; }
+    to { opacity: 1; height: 150px; }
+}
+
+@keyframes popStem {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (max-width: 700px) {
+    .songs-wrap {
+        padding: 0 1rem;
+    }
+
+    .albums-grid {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .album-card {
+        flex: none;
+        width: 100%;
+        height: 110px;
+        transition: height 0.4s ease;
+    }
+
+    .album-card:hover,
+    .album-card:focus-visible {
+        flex: none;
+        height: 170px;
+    }
+
+    .album-cover-wrap {
+        width: 80px;
+        height: 80px;
+    }
+
+    .album-cover-back {
+        width: 80px;
+        height: 80px;
+    }
+
+    .album-cover {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+
+    .album-cover-big-wrap {
+        width: 130px;
+        height: 130px;
+    }
+
+    .album-cover-back-big {
+        width: 130px;
+        height: 130px;
+    }
+
+    .album-title {
+        bottom: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .album-hint {
+        bottom: 0.5rem;
+    }
+
+    .stem-wrap {
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .stem-line {
+        display: none;
+    }
+
+    .stem-node {
+        position: static;
+        transform: none;
+        opacity: 1;
+        animation: none;
+    }
+
+    .stem-node a {
+        transform: none;
+    }
+
+    .stem-node a:hover {
+        transform: scale(1.05);
+    }
+
+    .album-cover-big {
+        width: 130px;
+        height: 130px;
+        margin-bottom: 0.5rem;
+    }
+}
+/* ===== Pertinent Links page ===== */
+.links-wrap {
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto 3rem;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.link-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    padding: 2rem 2.25rem;
+    text-align: left;
+}
+
+.link-card-eyebrow {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.75;
+    margin-bottom: 0.35rem;
+}
+
+.link-card-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.link-card-copy {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    opacity: 0.9;
+    margin-bottom: 1.25rem;
+}
+
+/* Socials list */
+.social-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.social-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    padding: 0.6rem 1.1rem;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.social-pill:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.social-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.social-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.social-platform {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.75;
+}
+
+.social-handle {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* CTA pill button (reuses #start-btn's visual language) */
+.pill-btn {
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #7c3aed;
+    background: #fff;
+    border: none;
+    border-radius: 999px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    margin-bottom: 1.5rem;
+}
+
+.pill-btn:hover {
+    transform: scale(1.05);
+}
+
+/* QR / payment details grid */
+.qr-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    max-width: 360px;
+}
+
+.qr-card {
+    text-align: center;
+}
+
+.qr-frame {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.25);
+    border: 3px dashed rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    /* Swap in the real QR code image here, e.g.:
+       <img src="assets/gcash-qr.png" alt="GCash QR code"> */
+}
+
+.qr-frame img,
+.qr-frame image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+}
+
+.qr-label {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+/* Reuses the same pill-notice look as the homepage's h4 */
+.callout {
+    font-size: 1rem;
+    font-weight: 400;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.9rem 1.5rem;
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    text-align: center;
+    max-width: 600px;
+    margin: 0.5rem auto 0;
+}
+
+@media (max-width: 600px) {
+    .links-wrap {
+        padding: 0 1rem;
+        gap: 1.25rem;
+    }
+
+    .link-card {
+        padding: 1.5rem;
+    }
+
+    .qr-grid {
+        max-width: 100%;
+    }
+
+    .callout {
+        margin: 0.5rem 1rem 0;
+        padding: 0.85rem 1.25rem;
+    }
+}
+
+/* ===== Contact form ===== */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    text-align: left;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    border-radius: 12px;
+    padding: 0.7rem 0.9rem;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-submit {
+    align-self: flex-start;
+    margin-bottom: 0;
+}
+
+.form-status {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    min-height: 1.2em;
+}
+
+.form-status.success {
+    color: #d1fae5;
+}
+
+.form-status.error {
+    color: #fecaca;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+        gap: 1.1rem;
+    }
+}
+
+/* ===== Contact page — YouTube-comments-style widget ===== */
+.yt-widget {
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto 3rem;
+    background: #fff;
+    color: #0f0f0f;
+    border-radius: 16px;
+    padding: 1.75rem 2rem 2.25rem;
+    text-align: left;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+.yt-comments-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.yt-sort {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #606060;
+    cursor: default;
+}
+
+/* Composer */
+.yt-composer {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2.25rem;
+}
+
+.yt-avatar {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #fff;
+}
+
+.yt-avatar--you {
+    background: #909090;
+}
+
+.yt-avatar--brand {
+    background: linear-gradient(135deg, #ff9ecb, #a78bfa, #7dd3fc);
+}
+
+.yt-avatar--fan {
+    background: #4c8bf5;
+}
+
+.yt-avatar--sm {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+}
+
+.yt-composer-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.yt-composer-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.6rem;
+}
+
+.yt-meta-input {
+    flex: 1;
+    min-width: 0;
+    font-family: inherit;
+    font-size: 0.82rem;
+    color: #0f0f0f;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0.3rem 0.1rem;
+    transition: border-color 0.15s ease;
+}
+
+.yt-meta-input::placeholder {
+    color: #909090;
+}
+
+.yt-meta-input:focus {
+    outline: none;
+    border-bottom: 1.5px solid #0f0f0f;
+}
+
+.yt-composer-input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #0f0f0f;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0.4rem 0.1rem 0.6rem;
+    resize: none;
+    min-height: 24px;
+    transition: border-color 0.15s ease;
+}
+
+.yt-composer-input::placeholder {
+    color: #606060;
+}
+
+.yt-composer-input:focus {
+    outline: none;
+    border-bottom: 1.5px solid #065fd4;
+}
+
+.yt-composer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+}
+
+.yt-btn {
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 18px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.yt-btn--cancel {
+    background: transparent;
+    color: #606060;
+}
+
+.yt-btn--cancel:hover {
+    background: #f2f2f2;
+}
+
+.yt-btn--submit {
+    background: #065fd4;
+    color: #fff;
+}
+
+.yt-btn--submit:disabled {
+    background: #e0e0e0;
+    color: #a8a8a8;
+    cursor: default;
+}
+
+.yt-btn--submit:not(:disabled):hover {
+    background: #0b57d0;
+}
+
+.yt-form-note {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    min-height: 1.1em;
+}
+
+.yt-form-note.success {
+    color: #0a8a3f;
+}
+
+.yt-form-note.error {
+    color: #d93025;
+}
+
+/* Comment list */
+.yt-comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.yt-comment-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.yt-pinned-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #606060;
+    margin: 0 0 0.4rem 3.25rem;
+}
+
+.yt-comment-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.yt-comment-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.15rem;
+}
+
+.yt-comment-author {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #0f0f0f;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.yt-verified {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #a78bfa;
+    color: #fff;
+    font-size: 0.65rem;
+    line-height: 1;
+}
+
+.yt-comment-time {
+    font-size: 0.78rem;
+    color: #606060;
+}
+
+.yt-comment-text {
+    font-size: 0.9rem;
+    color: #0f0f0f;
+    line-height: 1.45;
+    margin-bottom: 0.5rem;
+    word-break: break-word;
+}
+
+.yt-comment-text a {
+    color: #065fd4;
+    text-decoration: none;
+}
+
+.yt-comment-text a:hover {
+    text-decoration: underline;
+}
+
+.yt-comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-size: 0.8rem;
+    color: #606060;
+}
+
+.yt-action {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: default;
+}
+
+.yt-action svg {
+    opacity: 0.75;
+}
+
+.yt-comment--reply {
+    margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+    .yt-widget {
+        padding: 1.25rem 1.25rem 1.75rem;
+        border-radius: 14px;
+    }
+
+    .yt-composer-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .yt-pinned-label {
+        margin-left: 2.75rem;
+    }
+
+    .yt-avatar {
+        width: 34px;
+        height: 34px;
     }
 }

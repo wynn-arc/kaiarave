@@ -3,22 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coming Soon - ZAIA ST!</title>
+    <title>Contact - ZAIA ST!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
     <div id="navbar-placeholder"></div>
 
-    <div class="coming-soon-wrap">
-        <div class="coming-soon-icon">🚧</div>
-        <h1>Coming Soon!</h1>
-        <h2>This page is still under construction</h2>
-        <h4>Check back soon, we're working on it! 💜</h4>
-        <a href="home.html" class="back-home-btn">Back to Home</a>
+    <div class="page-content">
+
+        <h1>Contact Us</h1>
+        <h2>Leave us a comment &mdash; we read everything</h2>
+
+        <div class="yt-widget">
+
+            <div class="yt-comments-header">
+                <span class="yt-comments-count"><span id="yt-comment-count">6</span> Comments</span>
+                <span class="yt-sort">
+                    <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"></path></svg>
+                    Sort by
+                </span>
+            </div>
+
+            <form class="yt-composer" id="contact-form">
+                <div class="yt-avatar yt-avatar--you" id="composer-avatar">
+                    <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.5 0-10.4 1.7-10.4 5.2v2.2h20.8v-2.2c0-3.5-6.9-5.2-10.4-5.2z"></path></svg>
+                </div>
+                <div class="yt-composer-body">
+                    <div class="yt-composer-meta">
+                        <input class="yt-meta-input" type="text" id="cf-name" placeholder="Name" required>
+                        <input class="yt-meta-input" type="email" id="cf-email" placeholder="Email" required>
+                    </div>
+                    <textarea class="yt-composer-input" id="cf-message" placeholder="Add a comment..." rows="1" required></textarea>
+                    <div class="yt-composer-actions">
+                        <button type="button" class="yt-btn yt-btn--cancel" id="cf-cancel">Cancel</button>
+                        <button type="submit" class="yt-btn yt-btn--submit" id="cf-submit" disabled>Comment</button>
+                    </div>
+                    <p class="yt-form-note" id="form-status"></p>
+                </div>
+            </form>
+
+            <div class="yt-comment-list" id="comment-list">
+
+                <div class="yt-comment">
+                    <div class="yt-comment-main">
+                        <p class="yt-pinned-label">
+                            <svg viewBox="0 0 24 24" width="12" height="12"><path fill="currentColor" d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"></path></svg>
+                            Pinned by ZAIA ST
+                        </p>
+                        <div class="yt-comment-row">
+                            <div class="yt-avatar yt-avatar--brand">Z</div>
+                            <div class="yt-comment-body">
+                                <div class="yt-comment-header">
+                                    <span class="yt-comment-author">ZAIA ST <span class="yt-verified" title="Verified">&check;</span></span>
+                                    <span class="yt-comment-time">Pinned</span>
+                                </div>
+                                <p class="yt-comment-text">Business &amp; collab inquiries &rarr; <a href="mailto:zaiaraveteam@email.com">zaiaraveteam@email.com</a> &#128140;</p>
+                                <div class="yt-comment-actions">
+                                    <span class="yt-action"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"></path></svg> 128</span>
+                                    <span class="yt-action">Reply</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="yt-comment">
+                    <div class="yt-comment-main">
+                        <p class="yt-pinned-label">
+                            <svg viewBox="0 0 24 24" width="12" height="12"><path fill="currentColor" d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"></path></svg>
+                            Pinned by ZAIA ST
+                        </p>
+                        <div class="yt-comment-row">
+                            <div class="yt-avatar yt-avatar--brand">Z</div>
+                            <div class="yt-comment-body">
+                                <div class="yt-comment-header">
+                                    <span class="yt-comment-author">ZAIA ST <span class="yt-verified" title="Verified">&check;</span></span>
+                                    <span class="yt-comment-time">Pinned</span>
+                                </div>
+                                <p class="yt-comment-text">Slide into our DMs anytime &rarr; <a href="https://x.com/zaiaraveteam" target="_blank" rel="noopener">@zaiaraveteam</a> on X</p>
+                                <div class="yt-comment-actions">
+                                    <span class="yt-action"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"></path></svg> 96</span>
+                                    <span class="yt-action">Reply</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="yt-comment">
+                    <div class="yt-comment-main">
+                        <p class="yt-pinned-label">
+                            <svg viewBox="0 0 24 24" width="12" height="12"><path fill="currentColor" d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"></path></svg>
+                            Pinned by ZAIA ST
+                        </p>
+                        <div class="yt-comment-row">
+                            <div class="yt-avatar yt-avatar--brand">Z</div>
+                            <div class="yt-comment-body">
+                                <div class="yt-comment-header">
+                                    <span class="yt-comment-author">ZAIA ST <span class="yt-verified" title="Verified">&check;</span></span>
+                                    <span class="yt-comment-time">Pinned</span>
+                                </div>
+                                <p class="yt-comment-text">Or find us on Instagram &rarr; <a href="https://instagram.com/zaiaraveteam" target="_blank" rel="noopener">@zaiaraveteam</a></p>
+                                <div class="yt-comment-actions">
+                                    <span class="yt-action"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"></path></svg> 74</span>
+                                    <span class="yt-action">Reply</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="yt-comment">
+                    <div class="yt-comment-row">
+                        <div class="yt-avatar yt-avatar--fan">R</div>
+                        <div class="yt-comment-body">
+                            <div class="yt-comment-header">
+                                <span class="yt-comment-author">ravegirl143</span>
+                                <span class="yt-comment-time">3 days ago</span>
+                            </div>
+                            <p class="yt-comment-text">P@nuU p1 m4Mm33T s! n4D1n3? &#128557;&#128293;</p>
+                            <div class="yt-comment-actions">
+                                <span class="yt-action"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"></path></svg> 24</span>
+                                <span class="yt-action">Reply</span>
+                            </div>
+
+                            <div class="yt-comment yt-comment--reply">
+                                <div class="yt-comment-row">
+                                    <div class="yt-avatar yt-avatar--brand yt-avatar--sm">Z</div>
+                                    <div class="yt-comment-body">
+                                        <div class="yt-comment-header">
+                                            <span class="yt-comment-author">ZAIA ST <span class="yt-verified" title="Verified">&check;</span></span>
+                                            <span class="yt-comment-time">2 days ago</span>
+                                        </div>
+                                        <p class="yt-comment-text">Follow us on all social media platforms! &#128156;</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
     <script src="script.js"></script>
     <script src="nav-loader.js"></script>
+    <script src="contact-form.js"></script>
 </body>
 </html>
