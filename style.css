@@ -671,7 +671,6 @@ h4 {
     line-height: 1.6;
 }
 
-/* Sidebar */
 .watch-sidebar {
     display: flex;
     flex-direction: column;
@@ -834,7 +833,7 @@ h4 {
 
     .logo-container.tapped .vinyl {
         opacity: 1;
-        transform: translate(-50%, -60%) scale(0.9);
+        transform: translate(-50%, -50%) scale(1.15);
         animation: spin 4s linear infinite;
     }
 
@@ -966,10 +965,6 @@ h4 {
     opacity: 0;
     z-index: 1;
     transition: transform 0.4s ease, opacity 0.4s ease;
-    /* This circle sits behind the CD icon — swap in the real album art here:
-       background-image: url('albumcovers/neon-dreams.jpg');
-       background-size: cover;
-       background-position: center; */
 }
 
 .album-card:hover .album-cover-back,
@@ -992,10 +987,6 @@ h4 {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     z-index: 2;
     transition: transform 0.4s ease;
-    /* Or swap the art in here instead, and drop .album-cover-back entirely:
-       background-image: url('albumcovers/neon-dreams.jpg');
-       background-size: cover;
-       background-position: center; */
 }
 
 .album-card:hover .album-cover,
@@ -1128,7 +1119,6 @@ h4 {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     transform: translate(-70%, -50%);
     z-index: 1;
-    /* Swap in the real album art here, same as .album-cover-back */
 }
 
 .album-cover-big {
@@ -1144,7 +1134,6 @@ h4 {
     justify-content: center;
     font-size: 3.5rem;
     z-index: 2;
-    /* Or swap the art in here instead, and drop .album-cover-back-big entirely */
 }
 
 .stem-line {
@@ -1260,6 +1249,17 @@ h4 {
         font-size: 2rem;
     }
 
+    .album-card:hover .album-cover-back,
+    .album-card:focus-visible .album-cover-back {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.85);
+    }
+
+    .album-card:hover .album-cover,
+    .album-card:focus-visible .album-cover {
+        transform: scale(1.15);
+    }
+
     .album-cover-big-wrap {
         width: 130px;
         height: 130px;
@@ -1362,6 +1362,11 @@ h4 {
 
     .album-cover {
         font-size: 1.6rem;
+    }
+
+    .album-card:hover .album-cover,
+    .album-card:focus-visible .album-cover {
+        transform: scale(1.15);
     }
 
     .album-title {
@@ -1511,7 +1516,6 @@ h4 {
     transform: scale(1.05);
 }
 
-/* QR / payment details grid */
 .qr-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1533,8 +1537,6 @@ h4 {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    /* Swap in the real QR code image here, e.g.:
-       <img src="assets/gcash-qr.png" alt="GCash QR code"> */
 }
 
 .qr-frame img,
@@ -1554,7 +1556,6 @@ h4 {
     opacity: 0.85;
 }
 
-/* Reuses the same pill-notice look as the homepage's h4 */
 .callout {
     font-size: 1rem;
     font-weight: 400;
@@ -1675,7 +1676,7 @@ h4 {
     }
 }
 
-/* ===== Contact page — YouTube-comments-style widget ===== */
+/* ===== Contact page ===== */
 .yt-widget {
     max-width: 700px;
     width: 100%;
@@ -1708,7 +1709,6 @@ h4 {
     cursor: default;
 }
 
-/* Composer */
 .yt-composer {
     display: flex;
     gap: 1rem;
