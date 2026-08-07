@@ -1319,8 +1319,8 @@ h4 {
     }
 
     .album-overlay {
-        padding: 2.5rem 1rem 1rem;
-        align-items: flex-start;
+        padding: 1.5rem 1rem;
+        align-items: center;
         overflow-y: auto;
     }
 
@@ -1329,7 +1329,7 @@ h4 {
     }
 
     .album-close {
-        top: -2.25rem;
+        top: -1rem;
         right: 0;
     }
 }
