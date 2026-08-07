@@ -1292,16 +1292,20 @@ h4 {
 
     .stem-node {
         position: static;
+        width: auto;
+        height: auto;
         transform: none;
         opacity: 1;
         animation: none;
     }
 
     .stem-node a {
+        display: block;
         transform: none;
         white-space: normal;
         text-align: center;
         max-width: 260px;
+        margin: 0 auto;
     }
 
     .stem-node a:hover {
