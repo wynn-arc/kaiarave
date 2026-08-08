@@ -2,7 +2,8 @@
 const EMAILJS_CONFIG = {
     publicKey: 'lSq7sbsnnoHzzcTSJ',
     serviceId: 'kaiarave_vercel',
-    templateId: 'template_bt111tm',
+    templateId: 'template_bt111tm', // sends the message TO inbox
+    autoReplyTemplateId: 'template_6hao2pw', // sends a reply back TO the visitor
 };
 
 emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
@@ -77,6 +78,14 @@ $(function () {
             from_email: email,
             message: message,
         }).then(function () {
+            emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.autoReplyTemplateId, {
+                to_email: email,
+                to_name: name,
+                message: message,
+            }).catch(function (err) {
+                console.error('EmailJS auto-reply error:', err);
+            });
+
             const initial = name.charAt(0).toUpperCase();
             const $newComment = $(`
                 <div class="yt-comment">
