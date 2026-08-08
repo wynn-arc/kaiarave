@@ -4,7 +4,7 @@ const membersData = {
         role: "Leader, Vocalist, Dancer",
         img: "assets/Angela.jpg",
         avatar: "🐻",
-        description: "Angela is the Leader one of the eldest members of KAIA, she debuted in KAIA along with her twin sister, Charice Hermoso",
+        description: "Angela is the Leader one of the eldest members of KAIA, she debuted in KAIA along with her twin sister, Charice Hermoso. She is known for her puppy like visuals and her incredible vocal tone that is easily distinguishable due to it’s uniqueness. On stage, she stands out for her stable vocals and energetic dancing, paired with her enigmatic stage presence. She acts as the tying bond as the leader, and never hesitates to go all out for KAIA and ZAIA",
         socials: "@charlottehermoso__"
     },
     member2: {

@@ -204,6 +204,22 @@ h4 {
     transform: scale(1.05);
 }
 
+#mm-start-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #7c3aed;
+    background: #fff;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+#mm-start-btn:hover {
+    transform: scale(1.05);
+}
+
 .falling-star {
     position: absolute;
     top: -2rem;
@@ -216,6 +232,73 @@ h4 {
 @keyframes fall {
     from { top: -2rem; }
     to { top: 300px; }
+}
+
+/* ===== Memory Match minigame ===== */
+#mm-game-area {
+    position: relative;
+    width: 100%;
+    min-height: 300px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+#mm-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+    width: 100%;
+    max-width: 360px;
+}
+
+.mm-card {
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    perspective: 600px;
+}
+
+.mm-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s;
+    transform-style: preserve-3d;
+}
+
+.mm-card.mm-flipped .mm-card-inner,
+.mm-card.mm-matched .mm-card-inner {
+    transform: rotateY(180deg);
+}
+
+.mm-card-front,
+.mm-card-back {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    border-radius: 10px;
+    backface-visibility: hidden;
+}
+
+.mm-card-front {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.mm-card-back {
+    background: #fff;
+    color: #7c3aed;
+    transform: rotateY(180deg);
+}
+
+.mm-card.mm-matched .mm-card-back {
+    background: #d1fae5;
+    color: #0a8a3f;
 }
 
 /* ===== Logo / vinyl / Spotify hover ===== */
@@ -834,7 +917,7 @@ h4 {
 
     .logo-container.tapped .vinyl {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1.15);
+        transform: translate(-50%, -60%) scale(0.9);
         animation: spin 4s linear infinite;
     }
 
@@ -1260,25 +1343,14 @@ h4 {
         font-size: 2rem;
     }
 
-    .album-card:hover .album-cover-back,
-    .album-card:focus-visible .album-cover-back {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.85);
-    }
-
-    .album-card:hover .album-cover,
-    .album-card:focus-visible .album-cover {
-        transform: scale(1.15);
-    }
-
     .album-cover-big-wrap {
-        width: 190px;
-        height: 190px;
+        width: 130px;
+        height: 130px;
     }
 
     .album-cover-back-big {
-        width: 190px;
-        height: 190px;
+        width: 130px;
+        height: 130px;
     }
 
     .album-title {
@@ -1324,9 +1396,8 @@ h4 {
     }
 
     .album-cover-big {
-        width: 190px;
-        height: 190px;
-        font-size: 4.2rem;
+        width: 130px;
+        height: 130px;
         margin-bottom: 0.5rem;
     }
 
@@ -1376,11 +1447,6 @@ h4 {
         font-size: 1.6rem;
     }
 
-    .album-card:hover .album-cover,
-    .album-card:focus-visible .album-cover {
-        transform: scale(1.15);
-    }
-
     .album-title {
         font-size: 0.85rem;
         bottom: 0.75rem;
@@ -1394,12 +1460,12 @@ h4 {
     .album-cover-big-wrap,
     .album-cover-back-big,
     .album-cover-big {
-        width: 170px;
-        height: 170px;
+        width: 110px;
+        height: 110px;
     }
 
     .album-cover-big {
-        font-size: 3.6rem;
+        font-size: 2.4rem;
     }
 
     .expanded-title {
