@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
     <div id="navbar-placeholder"></div>
@@ -38,6 +37,7 @@
                         <input class="yt-meta-input" type="text" id="cf-name" placeholder="Name" required>
                         <input class="yt-meta-input" type="email" id="cf-email" placeholder="Email" required>
                     </div>
+                    <input type="text" id="cf-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;">
                     <textarea class="yt-composer-input" id="cf-message" placeholder="Add a comment..." rows="1" required></textarea>
                     <div class="yt-composer-actions">
                         <button type="button" class="yt-btn yt-btn--cancel" id="cf-cancel">Cancel</button>
@@ -156,6 +156,7 @@
 
     <script src="script.js"></script>
     <script src="nav-loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="contact-form.js"></script>
 </body>
 </html>

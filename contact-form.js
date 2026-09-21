@@ -1,12 +1,9 @@
 
-const EMAILJS_CONFIG = {
-    publicKey: 'lSq7sbsnnoHzzcTSJ',
-    serviceId: 'kaiarave_vercel',
-    templateId: 'template_bt111tm', // sends the message TO inbox
-    autoReplyTemplateId: 'template_6hao2pw', // sends a reply back TO the visitor
+const CONFIG = {
+    SUPABASE_URL: 'https://nxutbiushtdexnleoclm.supabase.co',
+    SUPABASE_ANON_KEY: 'sb_publishable_XdSVKq1zALDvwl4icQpjPA_IGj9TO6n',
+    FORMSPREE_URL: 'https://formspree.io/f/xjykwkjw'
 };
-
-emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
 
 $(function () {
     const $form = $('#contact-form');
@@ -21,6 +18,88 @@ $(function () {
     const $count = $('#yt-comment-count');
 
     const defaultAvatarSVG = $avatar.html();
+    const COOLDOWN_MS = 30000;
+    let lastSentAt = 0;
+
+    // Match the limits in schema.sql
+    $name.attr('maxlength', 50);
+    $email.attr('maxlength', 254);
+    $message.attr('maxlength', 1000);
+
+    // Supabase client (null if not configured yet, so the page still works)
+    const configured = CONFIG.SUPABASE_URL.indexOf('YOUR-') === -1;
+    const db = (window.supabase && configured)
+        ? window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY)
+        : null;
+
+    // ---------- helpers ----------
+
+    function escapeHtml(str) {
+        return $('<div>').text(str).html();
+    }
+
+    function timeAgo(iso) {
+        const seconds = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+        const units = [
+            ['year', 31536000], ['month', 2592000], ['day', 86400],
+            ['hour', 3600], ['minute', 60]
+        ];
+        for (const [label, size] of units) {
+            const n = Math.floor(seconds / size);
+            if (n >= 1) return n + ' ' + label + (n > 1 ? 's' : '') + ' ago';
+        }
+        return 'Just now';
+    }
+
+    function renderComment(name, message, timeText) {
+        const initial = name.charAt(0).toUpperCase();
+        return $(`
+            <div class="yt-comment">
+                <div class="yt-comment-row">
+                    <div class="yt-avatar yt-avatar--fan">${escapeHtml(initial)}</div>
+                    <div class="yt-comment-body">
+                        <div class="yt-comment-header">
+                            <span class="yt-comment-author">${escapeHtml(name)}</span>
+                            <span class="yt-comment-time">${escapeHtml(timeText)}</span>
+                        </div>
+                        <p class="yt-comment-text">${escapeHtml(message)}</p>
+                        <div class="yt-comment-actions">
+                            <span class="yt-action">Reply</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+    }
+
+    function setStatus(text, kind) {
+        $status.text(text).removeClass('success error');
+        if (kind) $status.addClass(kind);
+    }
+
+    // ---------- load approved comments ----------
+
+    async function loadComments() {
+        if (!db) return;
+        const { data, error } = await db
+            .from('comments')
+            .select('id, name, message, created_at')
+            .order('created_at', { ascending: false })
+            .limit(100);
+
+        if (error) {
+            console.error('Could not load comments:', error);
+            return;
+        }
+
+        const base = parseInt($count.text(), 10) || 0;
+        data.forEach(function (c) {
+            $list.append(renderComment(c.name, c.message, timeAgo(c.created_at)));
+        });
+        $count.text(base + data.length);
+    }
+
+    // ---------- composer behaviour ----------
 
     $message.on('input', function () {
         this.style.height = 'auto';
@@ -41,87 +120,103 @@ $(function () {
         $submit.prop('disabled', $message.val().trim().length === 0);
     }
 
-    $cancel.on('click', function () {
-        resetForm();
-    });
+    $cancel.on('click', resetForm);
 
     function resetForm() {
         $form[0].reset();
         $message.css('height', 'auto');
         $avatar.html(defaultAvatarSVG);
-        $status.text('').removeClass('success error');
+        setStatus('');
         toggleSubmit();
     }
 
-    function escapeHtml(str) {
-        return $('<div>').text(str).html();
-    }
+    // ---------- submit ----------
 
-    $form.on('submit', function (e) {
+    $form.on('submit', async function (e) {
         e.preventDefault();
+
+        // Honeypot: real people never see or fill this field, bots do.
+        if ($('#cf-website').val()) return;
 
         const name = $name.val().trim();
         const email = $email.val().trim();
         const message = $message.val().trim();
 
         if (!name || !email || !message) {
-            $status.text('Please fill out your name, email, and comment.')
-                   .removeClass('success').addClass('error');
+            setStatus('Please fill out your name, email, and comment.', 'error');
+            return;
+        }
+
+        if (Date.now() - lastSentAt < COOLDOWN_MS) {
+            setStatus('Please wait a few seconds before sending another comment.', 'error');
+            return;
+        }
+
+        if (!db && !CONFIG.FORMSPREE_URL) {
+            setStatus('The backend is not configured yet (see CONFIG in contact-form.js).', 'error');
             return;
         }
 
         $submit.prop('disabled', true);
-        $status.text('Sending...').removeClass('success error');
+        setStatus('Sending...');
 
-        emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
-            from_name: name,
-            from_email: email,
-            message: message,
-        }).then(function () {
-            emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.autoReplyTemplateId, {
-                to_email: email,
-                to_name: name,
-                message: message,
-            }).catch(function (err) {
-                console.error('EmailJS auto-reply error:', err);
-            });
+        const payload = { name: name, email: email, message: message };
+        const jobs = [];
+        let dbIndex = -1;
 
-            const initial = name.charAt(0).toUpperCase();
-            const $newComment = $(`
-                <div class="yt-comment">
-                    <div class="yt-comment-row">
-                        <div class="yt-avatar yt-avatar--fan">${escapeHtml(initial)}</div>
-                        <div class="yt-comment-body">
-                            <div class="yt-comment-header">
-                                <span class="yt-comment-author">${escapeHtml(name)}</span>
-                                <span class="yt-comment-time">Just now</span>
-                            </div>
-                            <p class="yt-comment-text">${escapeHtml(message)}</p>
-                            <div class="yt-comment-actions">
-                                <span class="yt-action">👍 0</span>
-                                <span class="yt-action">Reply</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `);
+        if (db) {
+            dbIndex = jobs.length;
+            jobs.push(
+                db.from('comments').insert(payload).then(function (res) {
+                    if (res.error) throw res.error;
+                })
+            );
+        }
 
-            $list.prepend($newComment.hide().fadeIn(200));
+        if (CONFIG.FORMSPREE_URL) {
+            jobs.push(
+                fetch(CONFIG.FORMSPREE_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(function (res) {
+                    if (!res.ok) throw new Error('Formspree responded ' + res.status);
+                })
+            );
+        }
 
-            const current = parseInt($count.text(), 10) || 0;
-            $count.text(current + 1);
-
-            $status.text('Posted! Thanks for reaching out — we\'ll get back to you soon.')
-                   .removeClass('error').addClass('success');
-
-            resetForm();
-        }).catch(function (err) {
-            console.error('EmailJS error:', err);
-            $status.text('Something went wrong sending your message. Please try again or email us directly.')
-                   .removeClass('success').addClass('error');
-            $submit.prop('disabled', false);
+        const results = await Promise.allSettled(jobs);
+        results.forEach(function (r) {
+            if (r.status === 'rejected') console.error('Submit failed:', r.reason);
         });
+
+        const anyOk = results.some(function (r) { return r.status === 'fulfilled'; });
+        const savedComment = dbIndex >= 0 && results[dbIndex].status === 'fulfilled';
+
+        if (!anyOk) {
+            $submit.prop('disabled', false);
+            setStatus('Something went wrong. Please try again in a bit.', 'error');
+            return;
+        }
+
+        lastSentAt = Date.now();
+
+        // Show the visitor their own comment, marked as pending. It disappears on
+        // refresh and only becomes public once you approve it.
+        if (savedComment) {
+            const $pending = renderComment(name, message, 'Pending approval');
+            $list.prepend($pending.hide().fadeIn(200));
+        }
+
+        resetForm();
+        setStatus(
+            savedComment
+                ? 'Thanks! Your comment was sent and will appear once it is approved.'
+                : 'Thanks! Your message was sent.',
+            'success'
+        );
     });
 
     toggleSubmit();
+    loadComments();
 });
