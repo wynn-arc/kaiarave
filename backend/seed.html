@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ZAIA ST — one-time content seed</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+    body { font-family: system-ui, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
+    button { display: block; width: 100%; margin: 0.5rem 0; padding: 0.75rem; font-size: 1rem; cursor: pointer; }
+    pre { background: #f4f4f4; padding: 1rem; white-space: pre-wrap; word-break: break-word; max-height: 300px; overflow: auto; }
+    .warn { color: #b00020; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>ZAIA ST — seed existing content</h1>
+<p>This page is <strong>not linked from your site</strong> and does not need to be uploaded to your live host — you can just open it locally, or upload it and delete it once you're done. It copies your current members, admin bios, and discography into Supabase, one button per table. Safe to run more than once per button only if you clear the table first (running twice will duplicate rows).</p>
+
+<p class="warn" id="auth-warning">Not signed in yet.</p>
+
+<div>
+    <label>Email <input type="email" id="email"></label><br><br>
+    <label>Password <input type="password" id="password"></label><br><br>
+    <button id="login-btn">Sign in</button>
+</div>
+
+<hr>
+
+<button id="seed-members-btn" disabled>1. Seed members (KAIA)</button>
+<button id="seed-admins-btn" disabled>2. Seed admins (About Us)</button>
+<button id="seed-albums-btn" disabled>3. Seed discography (albums + tracks)</button>
+
+<pre id="log">Ready.</pre>
+
+<script>
+const SUPABASE_URL = 'https://nxutbiushtdexnleoclm.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_XdSVKq1zALDvwl4icQpjPA_IGj9TO6n';
+// ----------------------------------------------------
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $log = document.getElementById('log');
+function log(msg) { $log.textContent += '\n' + msg; }
+
+document.getElementById('login-btn').addEventListener('click', async () => {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const { error } = await db.auth.signInWithPassword({ email, password });
+    if (error) {
+        document.getElementById('auth-warning').textContent = 'Login failed: ' + error.message;
+        return;
+    }
+    document.getElementById('auth-warning').textContent = 'Signed in. You can seed now.';
+    document.querySelectorAll('#seed-members-btn, #seed-admins-btn, #seed-albums-btn')
+        .forEach(b => b.disabled = false);
+});
+
+// ---------------- MEMBERS ----------------
+
+const members = [
+    { id: 'member1', name: 'Angela Hermoso', role: 'Leader, Vocalist, Dancer', img: 'assets/Angela.jpg', avatar: '🐻', socials: '@charlottehermoso__', sort_order: 1,
+      description: "Angela is the Leader one of the eldest members of KAIA, she debuted in KAIA along with her twin sister, Charice Hermoso. She is known for her puppy like visuals and her incredible vocal tone that is easily distinguishable due to it's uniqueness. On stage, she stands out for her stable vocals and energetic dancing, paired with her enigmatic stage presence. She acts as the tying bond as the leader, and never hesitates to go all out for KAIA and ZAIA" },
+    { id: 'member2', name: 'Charice Hermoso', role: 'Vocalist, Rapper, Dancer', img: 'assets/Charice.jpg', avatar: '🍒', socials: '@charicehermoso', sort_order: 2,
+      description: "Charice is Angela's twin sister. She is a rapper and dancer. On stage, she is full of energy and confidence. Her rap lines give KAIA a strong and powerful vibe. Off stage, she is playful and fun, which shows another side of her personality. Charice adds \u201cswag\u201d and attitude to the group's performances." },
+    { id: 'member3', name: 'Alexa Averilla', role: 'Vocalist, Rapper, Dancer', img: 'assets/Alexa.jpg', avatar: '🐉', socials: '@xvndrvgon', sort_order: 3,
+      description: "Alexa is also a rapper and dancer. She is known for her charisma and confidence. When she performs, she shows sharp rap skills and expressive dance moves. Fans love her because she can be both strong and graceful. Alexa brings a modern and youthful energy to KAIA." },
+    { id: 'member4', name: 'Sophia Mercado', role: 'Vocalist, Dancer', img: 'assets/Sophia.jpg', avatar: '🦊', socials: '@sophiaamercado_', sort_order: 4,
+      description: "Sophia is a vocalist and dancer. She has a smooth and emotional voice that makes KAIA's songs more heartfelt. Her dance style is graceful, and she connects with fans through her warm personality. Sophia is often seen as the \u201cheart\u201d of the group because she brings sincerity and emotion to their music." },
+    { id: 'member5', name: 'Charlotte Secretario', role: 'Vocalist, Dancer', img: 'assets/Charlotte.jpg', avatar: '🍊', socials: '@charlottescrtr', sort_order: 5,
+      description: "Charlotte \u2013 Charlotte is the youngest member (maknae). She can rap, sing, and dance, making her very versatile. Even though she is the youngest, she shows great skill and confidence. Charlotte is cheerful and bright, which makes her performances fun to watch. She represents the youthful spirit of KAIA." }
+];
+
+document.getElementById('seed-members-btn').addEventListener('click', async () => {
+    log('Inserting members...');
+    const { error } = await db.from('members').insert(members);
+    log(error ? 'ERROR: ' + error.message : 'Members done: ' + members.length + ' rows.');
+});
+
+// ---------------- ADMINS ----------------
+
+const admins = [
+    { name: 'Leys', role: 'Head Admin', img: 'assets/leys.jpg', is_head: true, sort_order: 1,
+      description: "H110 aku 2 S1 N4D1NE eSt3 S1 L3y pAluh😗 suBranG GanDuh namun nG Hid AdmeN ng Za1A R4v3 TiM b1as ku s1 ChA hulaan mu nUlang siNu duUn YuN luNgs🤔🫵" },
+    { name: 'Ely', role: 'Member', img: 'assets/ely.jpg', is_head: false, sort_order: 2,
+      description: "Pano Ko Ba CCmolan 2? 🤪🤣 First Of All😗😙 HeLiOo PoHz🥺🥰 i'M eLyY😊😊🤪Mabait Aqng Tau! CH4R! 🤣🤣 Second pOhZ✌🥺 sAbI NiLa 👄🗣️🥺 kApAG iNlOvE kA😍👫🫂👥 tUmITigEl 🖐🚧‼️aNGg MuNdO mU 🪩 bUmIBiLi$ @Ng Ti8Ok nG pUsO mO🫢💗aT😳At😳tAbI❗😵\u200d💫🌫🎇aY‼️😯🤕hMmph! 😠🤬🌫📚gAnGsTer! ☠️ aY oOoOoOoOo... Si ChArIcE pAlA yUn. 😳👉👈 kAyA pAlA aNg HiRaP tAkAsAn. 😩💘 cHaRoT! 🤪✌pRoMiSe HiNdI aKo NaNgAnGaT. 🥺👉👈 bAkA iKaW pA aNg MaNgAt SaKaLiNg MaKiLaLa Mo Aq. 🤭💘 aYyIe kINiKiLiG n4y@n🤭🤫😘mAgStStReAm Aq Ng MaGdAmAg PaRa Sa KaIa. 🎶😭 KaIa PoIdI bUh NiO q s4MaH@n?? 🥺👉👈 hEhEhEh xDxDxD 🤪✌" },
+    { name: 'Zey', role: 'Member', img: 'assets/zey.jpg', is_head: false, sort_order: 3,
+      description: "hiii!!🤩✨ jst wna intrdce myslf im zeyy 1 of the bigggg fan of KAIAAAA!🥰🥰 evrythng abt dem is so prfct omg dey r so talented, prtty, nd hardworknggg!🥺💖 i lv deir sngs so much i strm dem evry sngl dayyyy👉👈🥺 im alwyzs here 2 supprt dem wth all my luv, nthng cn evr chng dat!!🫶🪽 im so proud 2 b 1 of Zaia n part of dis fam, wii alwyzs b here 4 KAIA no mattr watttt!! labuuu all u gurlsss!!🫂💯💅" },
+    { name: 'Bri', role: 'Member', img: 'assets/bri.jpg', is_head: false, sort_order: 4,
+      description: "Hi gayz, ako si bri. Un@ng tingin mo pal@nG ma11nlab k@ na .\n#Angela biaz3d. nah0holog na rin ba kau?!" },
+    { name: 'Nirvana', role: 'Member', img: 'assets/nirvana.jpg', is_head: false, sort_order: 5,
+      description: "H1l0 @k0 tu $1 nīrv4n@ b1@s ku sî äng€|a🐻, mïnsân s1 çh4rīcê🍒, mīns4n s1 @l€xa🐉, mîns4n sî s0ph1a🦊, mìns@n s1 çhår|0tte🍊 h€h€. i l0v€ KAIA t0 th€ m0ûnt4ins🗻 n b4ck @nd t0 th€ f4r far hīlls🌄 n @rõúnd €uropē🏰 n aûstr@lia🦘 b4ck t0 th€ st@t€s🗽 n chīn4⛩️ n @ll th€ way b@ck t0 philippines🪽. @yūn l4ng h€h€." },
+    { name: 'Mia', role: 'Member', img: 'assets/mia.jpg', is_head: false, sort_order: 6,
+      description: "HeLiOoOo PoHzZz 🤪👉👈 Aq pLaH sI MiA. 🥺💗 FiRsT oF aLL 😌✨ hUwAg Ka MaTaKoT sAkEn 😭 kAsI pInAkAdElIkAdO q LaNg NaGaWa... eH nAg-\"Ha?!\" kApAg Di q NaRiNiG. 👂🤣 SeCoNdLy 😔☝️ NaAaLaLa Ko TuLoY yUnG... 🤺🪑 \"Bakit kasalanan ko?!\" 😭 eH dI NaNgYeEeEmMm... 😔👉👈 mAdAlAs Aq MaGsAbI nG... 🗣️ \"Ha? AnO uLiT?\" 😭👂 At SyEmPrE... 📢🎶 MaGsTrEaM TaYo Ng MaGdAmAg PaRa Sa KAIA. 😭💗✨\nKaIa PoWeDe BuH Aq SaMaHaN? 🥺👉👈 xDxDxD 🤪" }
+];
+
+document.getElementById('seed-admins-btn').addEventListener('click', async () => {
+    log('Inserting admins...');
+    const { error } = await db.from('admins').insert(admins);
+    log(error ? 'ERROR: ' + error.message : 'Admins done: ' + admins.length + ' rows.');
+});
+
+// ---------------- DISCOGRAPHY ----------------
+
+const albums = [
+    { title: 'BLAH BLAH', color: '#70074e', cover_image: 'assets/blahblah.jpg', sort_order: 1,
+      tracks: [
+          { title: 'KAYA', url: 'https://youtu.be/9aFDvAvCFE8?si=0TWLY-VZSAKDRp-m' },
+          { title: 'BLAH BLAH', url: 'https://youtu.be/sgrKukIok1E?si=Qn89IQB3QgGMgkL8' }
+      ] },
+    { title: 'Dalawa Mix', color: '#d3b5d6', cover_image: 'assets/dalawa.jpg', sort_order: 2,
+      tracks: [
+          { title: 'Dalawa', url: 'https://youtu.be/2ON9kapIIMY?si=4n0ojHX2x3Fk-oIW' },
+          { title: 'Dalawa (REMIIX)', url: 'https://youtu.be/Ozokn2xHYUI?si=S0kUo3mPr-SDviqp' },
+          { title: 'Dalawa (SPED UP)', url: 'https://open.spotify.com/track/5Qt22xsWKx1W1NAeJ5ghAT?si=a8c73eb2de0b4605' },
+          { title: 'Dalawa (REMIIX-SPED UP)', url: 'https://open.spotify.com/track/6pqFofyeMYfSKf5iNU55sZ?si=85a28d8b48c346cd' },
+          { title: 'Dalawa (Jr Crown Remix)', url: 'https://youtu.be/QoT3rGKXlH8?si=slIwyA4U3b8QIYMp' }
+      ] },
+    { title: 'TURN UP', color: '#ff0048', cover_image: 'assets/turnup.jpg', sort_order: 3,
+      tracks: [
+          { title: 'TURN UP', url: 'https://youtu.be/cwvzb092ng4?si=hQj4ZlUPOnxjozW1' },
+          { title: 'Dalawa', url: 'https://youtu.be/2ON9kapIIMY?si=4n0ojHX2x3Fk-oIW' },
+          { title: 'KAYA', url: 'https://youtu.be/9aFDvAvCFE8?si=0TWLY-VZSAKDRp-m' },
+          { title: 'BLAH BLAH', url: 'https://youtu.be/sgrKukIok1E?si=Qn89IQB3QgGMgkL8' }
+      ] },
+    { title: '5678', color: '#220d25', cover_image: 'assets/5678.jpg', sort_order: 4,
+      tracks: [ { title: '5678', url: 'https://youtu.be/7_PGKzNVD4I?si=lLDZoV-Xt0syLAUL' } ] },
+    { title: 'YOU DID IT', color: '#220026', cover_image: 'assets/youdidit.jpg', sort_order: 5,
+      tracks: [ { title: 'YOU DID IT', url: 'https://youtu.be/Z1Lfxww39h8?si=t2DH9gmW-UQZVL90' } ] },
+    { title: 'Walang Biruan', color: '#e777ab', cover_image: 'assets/walangbiruan.jpg', sort_order: 6,
+      tracks: [ { title: 'Walang Biruan', url: 'https://youtu.be/i7b-r5yszw0?si=oTM5daNujKnDcmFD' } ] },
+    { title: 'Tanga', color: '#c51414', cover_image: 'assets/tanga.jpg', sort_order: 7,
+      tracks: [ { title: 'Tanga', url: 'https://youtu.be/jY5--PXuAx0?si=3pBKiHins6mVYtzr' } ] },
+    { title: 'Walkie Talkie', color: '#d88a2c', cover_image: 'assets/walkietalkie.jpg', sort_order: 8,
+      tracks: [ { title: 'Walkie talkie', url: 'https://youtu.be/lF7JeE9nc9Y?si=Tz4a4Z_LVxqb6VH7' } ] },
+    { title: 'Tara Sayaw', color: '#193465', cover_image: 'assets/tarasayaw.jpg', sort_order: 9,
+      tracks: [ { title: 'Tara Sayaw', url: 'https://youtu.be/2uvmpvZs6Gg?si=OYERwGtUtYYJkpdi' } ] },
+    { title: 'Hulog', color: '#2dd36d', cover_image: 'assets/hulogalbum.jpg', sort_order: 10,
+      tracks: [ { title: 'Hulog', url: 'https://youtu.be/YXc164iArPY?si=LQYvQBbDJDgtVpdJ' } ] }
+];
+
+document.getElementById('seed-albums-btn').addEventListener('click', async () => {
+    log('Inserting albums + tracks...');
+    for (const album of albums) {
+        const { tracks, ...albumRow } = album;
+        const { data, error } = await db.from('albums').insert(albumRow).select().single();
+        if (error) { log('ERROR on album "' + album.title + '": ' + error.message); continue; }
+        const trackRows = tracks.map((t, i) => ({ album_id: data.id, title: t.title, url: t.url, sort_order: i }));
+        const { error: trackError } = await db.from('tracks').insert(trackRows);
+        log(trackError
+            ? 'ERROR on tracks for "' + album.title + '": ' + trackError.message
+            : 'Seeded "' + album.title + '" (' + trackRows.length + ' tracks).');
+    }
+    log('Discography seed complete.');
+});
+</script>
+</body>
+</html>
