@@ -30,31 +30,84 @@ if (logoContainer) {
 }
 
 //ABOUT US JS
-const adminCards = document.querySelectorAll(".admin-card");
+const adminGrid = document.getElementById("admin-grid");
 const modalOverlay = document.getElementById("admin-modal-overlay");
-const modalImg = document.getElementById("admin-modal-img");
-const modalRole = document.getElementById("admin-modal-role");
-const modalName = document.getElementById("admin-modal-name");
-const modalDesc = document.getElementById("admin-modal-desc");
-const modalClose = document.getElementById("admin-modal-close");
 
-adminCards.forEach(card => {
-    card.addEventListener("click", () => {
-        modalImg.src = card.querySelector(".admin-thumb-img").src;
+if (adminGrid && modalOverlay) {
+    const modalImg = document.getElementById("admin-modal-img");
+    const modalRole = document.getElementById("admin-modal-role");
+    const modalName = document.getElementById("admin-modal-name");
+    const modalDesc = document.getElementById("admin-modal-desc");
+    const modalClose = document.getElementById("admin-modal-close");
+
+    var openAdminModal = function (card) {
+        modalImg.src = card.dataset.img;
         modalImg.alt = card.dataset.name;
         modalRole.textContent = card.dataset.role;
         modalName.textContent = card.dataset.name;
         modalDesc.textContent = card.dataset.desc;
         modalOverlay.classList.add("active");
+    };
+
+    modalClose.addEventListener("click", () => modalOverlay.classList.remove("active"));
+    modalOverlay.addEventListener("click", (e) => {
+        if (e.target === modalOverlay) modalOverlay.classList.remove("active");
     });
-});
 
-modalClose.addEventListener("click", () => {
-    modalOverlay.classList.remove("active");
-});
+    loadAdmins();
+}
 
-modalOverlay.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) {
-        modalOverlay.classList.remove("active");
+async function loadAdmins() {
+    const db = typeof getSupabaseClient === 'function' ? getSupabaseClient() : null;
+
+    if (!db) {
+        adminGrid.innerHTML = '<p class="songs-loading">Admins aren\'t connected yet — check supabase-config.js.</p>';
+        return;
     }
-});
+
+    const { data, error } = await db
+        .from('admins')
+        .select('id, name, role, description, img, is_head')
+        .order('sort_order', { ascending: true });
+
+    if (error) {
+        console.error('Could not load admins:', error);
+        adminGrid.innerHTML = '<p class="songs-loading">Could not load the admins right now.</p>';
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        adminGrid.innerHTML = '<p class="songs-loading">No admins yet — check back soon!</p>';
+        return;
+    }
+
+    adminGrid.innerHTML = '';
+    data.forEach(function (a) {
+        const card = document.createElement('div');
+        card.className = 'admin-card' + (a.is_head ? ' head-admin' : '');
+        card.dataset.name = a.name;
+        card.dataset.role = a.role;
+        card.dataset.desc = a.description;
+        card.dataset.img = a.img;
+
+        const img = document.createElement('img');
+        img.src = a.img;
+        img.alt = a.name;
+        img.className = 'admin-thumb-img';
+
+        const roleEl = document.createElement('p');
+        roleEl.className = 'admin-role';
+        roleEl.textContent = a.role;
+
+        const nameEl = document.createElement('p');
+        nameEl.className = 'admin-name';
+        nameEl.textContent = a.name;
+
+        card.appendChild(img);
+        card.appendChild(roleEl);
+        card.appendChild(nameEl);
+        card.addEventListener('click', () => openAdminModal(card));
+
+        adminGrid.appendChild(card);
+    });
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — ZAIA ST</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="admin-login-box" id="login-box">
+        <h1>ZAIA ST Admin</h1>
+        <p style="margin-bottom:1rem;color:#555;font-size:0.9rem;">Sign in with the admin account created in Supabase.</p>
+        <div class="admin-field" style="margin-bottom:0.75rem;">
+            <label>Email</label>
+            <input type="email" id="login-email">
+        </div>
+        <div class="admin-field" style="margin-bottom:1rem;">
+            <label>Password</label>
+            <input type="password" id="login-password">
+        </div>
+        <button class="admin-btn primary" id="login-btn" style="width:100%;padding:0.7rem;">Sign in</button>
+        <p class="admin-error" id="login-error"></p>
+    </div>
+
+    <div class="admin-wrap" id="admin-wrap" style="display:none;">
+        <div class="admin-panel">
+            <div class="admin-header">
+                <h1>ZAIA ST Admin</h1>
+                <button class="admin-btn ghost" id="logout-btn">Sign out</button>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" data-tab="members">Members</button>
+                <button class="admin-tab-btn" data-tab="discography">Discography</button>
+                <button class="admin-tab-btn" data-tab="admins">Admins</button>
+                <button class="admin-tab-btn" data-tab="comments">Comments</button>
+            </div>
+
+            <section class="admin-section active" id="tab-members">
+                <button class="admin-btn primary" id="members-add-btn">+ Add member</button>
+                <form class="admin-form hidden" id="members-form">
+                    <input type="hidden" id="members-form-mode">
+                    <div class="admin-field">
+                        <label>Slug / id (used in the URL, can't change later)</label>
+                        <input type="text" id="m-id" placeholder="e.g. angela">
+                    </div>
+                    <div class="admin-field"><label>Name</label><input type="text" id="m-name"></div>
+                    <div class="admin-field"><label>Role</label><input type="text" id="m-role" placeholder="Leader, Vocalist, Dancer"></div>
+                    <div class="admin-field"><label>Photo path</label><input type="text" id="m-img" placeholder="assets/Name.jpg"></div>
+                    <div class="admin-field"><label>Avatar emoji</label><input type="text" id="m-avatar" placeholder="🐻"></div>
+                    <div class="admin-field"><label>Socials</label><input type="text" id="m-socials" placeholder="@handle"></div>
+                    <div class="admin-field"><label>Sort order</label><input type="number" id="m-sort" value="0"></div>
+                    <div class="admin-field full-width"><label>Description</label><textarea id="m-desc"></textarea></div>
+                    <p class="admin-error" id="members-form-error"></p>
+                    <div class="admin-form-actions">
+                        <button type="button" class="admin-btn ghost" id="members-cancel-btn">Cancel</button>
+                        <button type="submit" class="admin-btn primary">Save member</button>
+                    </div>
+                </form>
+                <div class="admin-row-list" id="members-list"></div>
+            </section>
+
+            <section class="admin-section" id="tab-discography">
+                <button class="admin-btn primary" id="albums-add-btn">+ Add album</button>
+                <form class="admin-form hidden" id="albums-form">
+                    <input type="hidden" id="al-form-mode">
+                    <div class="admin-field"><label>Album title</label><input type="text" id="al-title"></div>
+                    <div class="admin-field"><label>Color (hex)</label><input type="text" id="al-color" placeholder="#a78bfa"></div>
+                    <div class="admin-field"><label>Cover image path</label><input type="text" id="al-cover" placeholder="assets/cover.jpg"></div>
+                    <div class="admin-field"><label>Sort order</label><input type="number" id="al-sort" value="0"></div>
+                    <div class="full-width">
+                        <label style="font-size:0.78rem;font-weight:600;color:#555;text-transform:uppercase;">Tracks</label>
+                        <div class="admin-track-list" id="al-tracks"></div>
+                        <button type="button" class="admin-btn ghost" id="al-add-track-btn">+ Add track</button>
+                    </div>
+                    <p class="admin-error" id="albums-form-error"></p>
+                    <div class="admin-form-actions">
+                        <button type="button" class="admin-btn ghost" id="albums-cancel-btn">Cancel</button>
+                        <button type="submit" class="admin-btn primary">Save album</button>
+                    </div>
+                </form>
+                <div class="admin-row-list" id="albums-list"></div>
+            </section>
+
+            <section class="admin-section" id="tab-admins">
+                <button class="admin-btn primary" id="admins-add-btn">+ Add admin</button>
+                <form class="admin-form hidden" id="admins-form">
+                    <input type="hidden" id="a-form-id">
+                    <div class="admin-field"><label>Name</label><input type="text" id="a-name"></div>
+                    <div class="admin-field"><label>Role</label><input type="text" id="a-role" value="Member"></div>
+                    <div class="admin-field"><label>Photo path</label><input type="text" id="a-img" placeholder="assets/name.jpg"></div>
+                    <div class="admin-field"><label>Sort order</label><input type="number" id="a-sort" value="0"></div>
+                    <div class="admin-field checkbox full-width">
+                        <input type="checkbox" id="a-head">
+                        <label style="text-transform:none;font-size:0.9rem;">Head Admin</label>
+                    </div>
+                    <div class="admin-field full-width"><label>Bio</label><textarea id="a-desc"></textarea></div>
+                    <p class="admin-error" id="admins-form-error"></p>
+                    <div class="admin-form-actions">
+                        <button type="button" class="admin-btn ghost" id="admins-cancel-btn">Cancel</button>
+                        <button type="submit" class="admin-btn primary">Save admin</button>
+                    </div>
+                </form>
+                <div class="admin-row-list" id="admins-list"></div>
+            </section>
+
+            <section class="admin-section" id="tab-comments">
+                <p style="color:#555;font-size:0.9rem;margin-bottom:1rem;">Comments appear on the Contact page only once approved.</p>
+                <div class="admin-row-list" id="comments-list"></div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

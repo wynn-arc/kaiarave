@@ -3,12 +3,24 @@ function getQueryParam(name) {
     return params.get(name);
 }
 
-function loadMember() {
+async function loadMember() {
     const memberId = getQueryParam("member");
-    const member = membersData[memberId];
+    const db = getSupabaseClient();
 
-    if (!member) {
-        document.querySelector(".watch-main").innerHTML = "<h1>Member not found</h1><a href='members.html'>Back to Members</a>";
+    if (!db) {
+        document.querySelector(".watch-main").innerHTML = "<h1>Members aren't connected yet</h1><p>Check supabase-config.js.</p>";
+        document.querySelector(".watch-sidebar").style.display = "none";
+        return;
+    }
+
+    const { data: member, error } = await db
+        .from('members')
+        .select('id, name, role, img, avatar, description, socials')
+        .eq('id', memberId)
+        .maybeSingle();
+
+    if (error || !member) {
+        document.querySelector(".watch-main").innerHTML = "<h1>Member not found</h1><a href='abtkaia.html'>Back to Members</a>";
         document.querySelector(".watch-sidebar").style.display = "none";
         return;
     }
@@ -22,31 +34,49 @@ function loadMember() {
     document.getElementById("member-socials").textContent = member.socials;
     document.getElementById("member-desc").textContent = member.description;
 
-    buildSidebar(memberId);
+    buildSidebar(db, member.id);
 }
 
-function buildSidebar(currentId) {
+async function buildSidebar(db, currentId) {
     const sidebarList = document.getElementById("sidebar-list");
     sidebarList.innerHTML = "";
 
-    for (const id in membersData) {
-        if (id === currentId) continue;
+    const { data: others, error } = await db
+        .from('members')
+        .select('id, name, role, img')
+        .neq('id', currentId)
+        .order('sort_order', { ascending: true });
 
-        const m = membersData[id];
+    if (error || !others) return;
+
+    others.forEach(function (m) {
         const card = document.createElement("a");
-        card.href = `abtmember.html?member=${id}`;
+        card.href = `abtmember.html?member=${encodeURIComponent(m.id)}`;
         card.className = "sidebar-card";
-        card.innerHTML = `
-    <div class="sidebar-thumb-wrap">
-        <img src="${m.img}" alt="${m.name}" class="sidebar-thumb">
-    </div>
-    <div class="sidebar-card-text">
-        <p class="sidebar-name">${m.name}</p>
-        <p class="sidebar-role">${m.role}</p>
-    </div>
-`;
+
+        const thumbWrap = document.createElement('div');
+        thumbWrap.className = 'sidebar-thumb-wrap';
+        const thumb = document.createElement('img');
+        thumb.src = m.img;
+        thumb.alt = m.name;
+        thumb.className = 'sidebar-thumb';
+        thumbWrap.appendChild(thumb);
+
+        const text = document.createElement('div');
+        text.className = 'sidebar-card-text';
+        const nameEl = document.createElement('p');
+        nameEl.className = 'sidebar-name';
+        nameEl.textContent = m.name;
+        const roleEl = document.createElement('p');
+        roleEl.className = 'sidebar-role';
+        roleEl.textContent = m.role;
+        text.appendChild(nameEl);
+        text.appendChild(roleEl);
+
+        card.appendChild(thumbWrap);
+        card.appendChild(text);
         sidebarList.appendChild(card);
-    }
+    });
 }
 
 loadMember();

@@ -38,6 +38,11 @@
     <div id="game-area">
         <button id="start-btn">Start</button>
     </div>
+    <div id="catch-postgame" class="postgame"></div>
+    <div class="leaderboard-wrap">
+        <h4 class="leaderboard-heading">Top scores</h4>
+        <div id="catch-leaderboard"></div>
+    </div>
 </div>
 
     <div class="minigame-section">
@@ -51,10 +56,17 @@
         <div id="mm-board"></div>
         <button id="mm-start-btn">Start</button>
     </div>
+    <div id="mm-postgame" class="postgame"></div>
+    <div class="leaderboard-wrap">
+        <h4 class="leaderboard-heading">Top scores</h4>
+        <div id="mm-leaderboard"></div>
+    </div>
 </div>
 
     <script src="script.js"></script>
 <script src="nav-loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 <script src="minigame.js"></script>
 <script src="memorygame.js"></script>
 </body>

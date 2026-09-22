@@ -4,6 +4,8 @@ const mmStartBtn = document.getElementById('mm-start-btn');
 const mmMovesEl = document.getElementById('mm-moves');
 const mmTimeEl = document.getElementById('mm-time');
 const mmStatusEl = document.getElementById('mm-status');
+const mmPostgameEl = document.getElementById('mm-postgame');
+const mmLeaderboardEl = document.getElementById('mm-leaderboard');
 
 const mmEmojis = ['🐻', '🍒', '🐉', '🦊', '🍊', '✨'];
 
@@ -101,6 +103,7 @@ function mmStartGame() {
     mmTimeEl.textContent = '0';
     mmStatusEl.textContent = 'Find all the matching pairs!';
     mmStartBtn.style.display = 'none';
+    if (mmPostgameEl) mmPostgameEl.innerHTML = '';
 
     mmBuildBoard();
 
@@ -114,9 +117,74 @@ function mmEndGame(won) {
     clearInterval(mmTimerInterval);
     if (won) {
         mmStatusEl.textContent = `You matched them all in ${mmMoves} moves and ${mmTimeElapsed}s! 🎉`;
+        mmShowScoreForm();
     }
     mmStartBtn.textContent = 'Play Again';
     mmStartBtn.style.display = 'inline-block';
 }
 
 mmStartBtn.addEventListener('click', mmStartGame);
+
+// ===== Leaderboard =====
+
+function mmShowScoreForm() {
+    if (!mmPostgameEl) return;
+    const db = getSupabaseClient();
+    if (!db) return;
+
+    mmPostgameEl.innerHTML = `
+        <form class="score-form" id="mm-score-form">
+            <input class="form-input" id="mm-player-name" type="text" placeholder="Your name for the leaderboard" maxlength="30" required>
+            <button type="submit" class="pill-btn">Save: ${mmMoves} moves, ${mmTimeElapsed}s</button>
+        </form>
+    `;
+
+    document.getElementById('mm-score-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById('mm-player-name');
+        const name = nameInput.value.trim();
+        if (!name) return;
+
+        const submitBtn = e.target.querySelector('button');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+
+        const { error } = await db.from('scores').insert({
+            game: 'memory', player_name: name, moves: mmMoves, time_seconds: mmTimeElapsed
+        });
+
+        if (error) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Try again';
+            console.error('Score save failed:', error);
+            return;
+        }
+
+        mmPostgameEl.innerHTML = '<p class="score-saved">Saved! 🎉</p>';
+        mmLoadLeaderboard();
+    });
+}
+
+async function mmLoadLeaderboard() {
+    if (!mmLeaderboardEl) return;
+    const db = getSupabaseClient();
+    if (!db) return;
+
+    const { data, error } = await db
+        .from('scores')
+        .select('player_name, moves, time_seconds')
+        .eq('game', 'memory')
+        .order('moves', { ascending: true })
+        .order('time_seconds', { ascending: true })
+        .limit(10);
+
+    if (error) {
+        console.error('Could not load leaderboard:', error);
+        return;
+    }
+
+    renderLeaderboard(mmLeaderboardEl, data, (row) => `${row.moves} moves · ${row.time_seconds}s`);
+}
+
+// renderLeaderboard() is shared with minigame.js (loaded on the same page)
+document.addEventListener('DOMContentLoaded', mmLoadLeaderboard);

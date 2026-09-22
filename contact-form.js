@@ -1,9 +1,5 @@
 
-const CONFIG = {
-    SUPABASE_URL: 'https://nxutbiushtdexnleoclm.supabase.co',
-    SUPABASE_ANON_KEY: 'sb_publishable_XdSVKq1zALDvwl4icQpjPA_IGj9TO6n',
-    FORMSPREE_URL: 'https://formspree.io/f/xjykwkjw'
-};
+const FORMSPREE_URL = 'https://formspree.io/f/xjykwkjw'; // e.g. 'https://formspree.io/f/xxxxxxxx' (leave '' to skip emails)
 
 $(function () {
     const $form = $('#contact-form');
@@ -27,10 +23,7 @@ $(function () {
     $message.attr('maxlength', 1000);
 
     // Supabase client (null if not configured yet, so the page still works)
-    const configured = CONFIG.SUPABASE_URL.indexOf('YOUR-') === -1;
-    const db = (window.supabase && configured)
-        ? window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY)
-        : null;
+    const db = getSupabaseClient();
 
     // ---------- helpers ----------
 
@@ -152,7 +145,7 @@ $(function () {
             return;
         }
 
-        if (!db && !CONFIG.FORMSPREE_URL) {
+        if (!db && !FORMSPREE_URL) {
             setStatus('The backend is not configured yet (see CONFIG in contact-form.js).', 'error');
             return;
         }
@@ -173,9 +166,9 @@ $(function () {
             );
         }
 
-        if (CONFIG.FORMSPREE_URL) {
+        if (FORMSPREE_URL) {
             jobs.push(
-                fetch(CONFIG.FORMSPREE_URL, {
+                fetch(FORMSPREE_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify(payload)
