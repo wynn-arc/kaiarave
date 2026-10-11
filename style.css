@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Allura&family=Poppins:wght@300;400;500;600;700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -12,7 +14,7 @@ body {
     align-items: center;
     justify-content: flex-start;
     text-align: center;
-    background: linear-gradient(135deg, #ff9ecb, #a78bfa, #7dd3fc);
+    background: linear-gradient(135deg, #0b2e24, #17543f, #2f8068, #5aa8a0);
     background-size: 200% 200%;
     animation: gradientShift 10s ease infinite;
     color: #ffffff;
@@ -21,6 +23,27 @@ body {
 html, body {
     width: 100%;
     overflow-x: hidden;
+}
+
+/* Soft forest-light bokeh */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(220, 255, 250, 0.35) 0, rgba(220, 255, 250, 0) 14%),
+        radial-gradient(circle at 80% 12%, rgba(200, 245, 255, 0.30) 0, rgba(200, 245, 255, 0) 18%),
+        radial-gradient(circle at 65% 55%, rgba(210, 255, 235, 0.22) 0, rgba(210, 255, 235, 0) 16%),
+        radial-gradient(circle at 25% 75%, rgba(230, 255, 245, 0.28) 0, rgba(230, 255, 245, 0) 20%),
+        radial-gradient(circle at 90% 88%, rgba(210, 250, 255, 0.30) 0, rgba(210, 250, 255, 0) 15%);
+    animation: bokehDrift 18s ease-in-out infinite alternate;
+}
+
+@keyframes bokehDrift {
+    from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.8; }
+    to   { transform: translate3d(2%, -2%, 0) scale(1.08); opacity: 1; }
 }
 
 @keyframes gradientShift {
@@ -39,16 +62,18 @@ html, body {
 
 h1 {
     margin-top: 6rem;
-    font-size: 3rem;
-    font-weight: 700;
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    font-family: 'Allura', cursive;
+    font-size: 4.5rem;
+    font-weight: 400;
+    text-shadow: 0 0 18px rgba(200, 255, 245, 0.7), 0 0 40px rgba(150, 240, 220, 0.4);
     margin-bottom: 0.5rem;
     letter-spacing: 1px;
 }
 
 h2 {
     font-size: 1.4rem;
-    font-weight: 500;
+    font-weight: 300;
+    letter-spacing: 0.08em;
     margin-bottom: 1.5rem;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
@@ -59,7 +84,7 @@ img {
     object-fit: cover;
     border-radius: 50%;
     border: 4px solid rgba(255, 255, 255, 0.7);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 32px rgba(180, 255, 240, 0.45);
     margin: 1rem 0 2rem;
     transition: transform 0.3s ease;
 }
@@ -84,7 +109,7 @@ h4 {
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(60, 20, 60, 0.4), rgba(0, 0, 0, 0.6));
+    background: linear-gradient(135deg, rgba(4, 28, 20, 0.65), rgba(20, 80, 60, 0.4), rgba(4, 28, 20, 0.65));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
@@ -100,8 +125,11 @@ h4 {
     font-weight: 700;
     color: #fff;
     text-decoration: none;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.35em;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     transition: transform 0.2s ease;
 }
 
@@ -166,7 +194,7 @@ h4 {
     height: 100%;
     width: min(280px, 80vw);
     padding: 4.5rem 1.75rem 2rem;
-    background: linear-gradient(160deg, rgba(20, 10, 30, 0.95), rgba(60, 20, 60, 0.95));
+    background: linear-gradient(160deg, rgba(5, 30, 23, 0.96), rgba(18, 74, 55, 0.96));
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
@@ -230,7 +258,7 @@ h4 {
 .nav-links a.active {
     font-weight: 700;
     padding-left: 1rem;
-    border-left: 3px solid #ff9ecb;
+    border-left: 3px solid #b8f2e6;
 }
 
 /* Stop the page scrolling behind an open drawer */
@@ -285,7 +313,7 @@ body.nav-locked {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
     font-weight: 600;
-    color: #7c3aed;
+    color: #2f7d5f;
     background: #fff;
     border: none;
     border-radius: 999px;
@@ -301,7 +329,7 @@ body.nav-locked {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
     font-weight: 600;
-    color: #7c3aed;
+    color: #2f7d5f;
     background: #fff;
     border: none;
     border-radius: 999px;
@@ -387,7 +415,7 @@ body.nav-locked {
 
 .mm-card-back {
     background: #fff;
-    color: #7c3aed;
+    color: #2f7d5f;
     transform: rotateY(180deg);
 }
 
@@ -429,7 +457,7 @@ body.nav-locked {
     left: 50%;
     width: 36px;
     height: 36px;
-    background: #ff9ecb;
+    background: #b8f2e6;
     border-radius: 50%;
     transform: translate(-50%, -50%);
 }
@@ -643,7 +671,7 @@ body.nav-locked {
 
 .admin-modal {
     position: relative;
-    background: linear-gradient(135deg, #a78bfa, #7dd3fc);
+    background: linear-gradient(135deg, #4fa68a, #9fe3e6);
     border-radius: 20px;
     padding: 2rem;
     max-width: 380px;
@@ -945,7 +973,7 @@ body.nav-locked {
 @media (max-width: 600px) {
     h1 {
         margin-top: 5rem;
-        font-size: 2.2rem;
+        font-size: 3.2rem;
     }
 
     h2 {
@@ -1089,7 +1117,7 @@ body.nav-locked {
 .album-card {
     position: relative;
     cursor: pointer;
-    background: var(--album-color, #a78bfa);
+    background: var(--album-color, #4fa68a);
     flex: 1 1 0;
     min-width: 50px;
     height: 100%;
@@ -1302,7 +1330,7 @@ body.nav-locked {
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.2);
     border: 5px solid rgba(255, 255, 255, 0.85);
-    box-shadow: 0 0 40px var(--album-color, #a78bfa);
+    box-shadow: 0 0 40px var(--album-color, #4fa68a);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1661,7 +1689,7 @@ body.nav-locked {
     padding: 0.7rem 1.5rem;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #7c3aed;
+    color: #2f7d5f;
     background: #fff;
     border: none;
     border-radius: 999px;
@@ -1897,7 +1925,7 @@ body.nav-locked {
 }
 
 .yt-avatar--brand {
-    background: linear-gradient(135deg, #ff9ecb, #a78bfa, #7dd3fc);
+    background: linear-gradient(135deg, #2f8068, #7fd6c8, #b8f2e6);
 }
 
 .yt-avatar--fan {
@@ -2072,7 +2100,7 @@ body.nav-locked {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: #a78bfa;
+    background: #4fa68a;
     color: #fff;
     font-size: 0.65rem;
     line-height: 1;
@@ -2304,7 +2332,7 @@ body.nav-locked {
 }
 
 .admin-tab-btn.active {
-    background: #7c3aed;
+    background: #2f7d5f;
     color: #fff;
 }
 
@@ -2383,7 +2411,7 @@ body.nav-locked {
     cursor: pointer;
 }
 
-.admin-btn.primary { background: #7c3aed; color: #fff; }
+.admin-btn.primary { background: #2f7d5f; color: #fff; }
 .admin-btn.primary:hover { background: #6b2fd6; }
 .admin-btn.ghost { background: #ececec; color: #333; }
 .admin-btn.ghost:hover { background: #e0e0e0; }
