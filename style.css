@@ -2892,3 +2892,36 @@ body.nav-locked {
         width: 50%;
     }
 }
+
+/* ===== Admin pop-up: scroll long bios ===== */
+.admin-modal {
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+}
+
+.admin-modal-img,
+.admin-modal-role,
+.admin-modal-name,
+.admin-modal-socials {
+    flex-shrink: 0;
+}
+
+.admin-modal-desc {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.6) transparent;
+}
+
+.admin-modal-desc::-webkit-scrollbar {
+    width: 6px;
+}
+
+.admin-modal-desc::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+}
