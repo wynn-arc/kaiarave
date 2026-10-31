@@ -20,6 +20,7 @@ function init() {
     setupAlbumsTab();
     setupAdminsTab();
     setupStatsTab();
+    setupProjectsTab();
 
     db.auth.getSession().then(function (res) {
         if (res.data.session) showAdmin();
@@ -64,6 +65,7 @@ function showAdmin() {
     loadAlbums();
     loadAdminsList();
     loadStatsList();
+    loadProjectsList();
     loadComments();
 }
 
@@ -329,6 +331,7 @@ function openAdminForm(admin) {
         document.getElementById('a-sort').value = admin.sort_order;
         document.getElementById('a-head').checked = admin.is_head;
         document.getElementById('a-desc').value = admin.description;
+        document.getElementById('a-socials').value = admin.socials || '';
     } else {
         document.getElementById('a-form-id').value = '';
         document.getElementById('a-name').value = '';
@@ -337,6 +340,7 @@ function openAdminForm(admin) {
         document.getElementById('a-sort').value = 0;
         document.getElementById('a-head').checked = false;
         document.getElementById('a-desc').value = '';
+        document.getElementById('a-socials').value = '';
     }
 }
 
@@ -350,7 +354,8 @@ async function saveAdminBio(e) {
         img: document.getElementById('a-img').value.trim(),
         sort_order: parseInt(document.getElementById('a-sort').value, 10) || 0,
         is_head: document.getElementById('a-head').checked,
-        description: document.getElementById('a-desc').value.trim()
+        description: document.getElementById('a-desc').value.trim(),
+        socials: document.getElementById('a-socials').value.trim()
     };
 
     if (!row.name) { errEl.textContent = 'Name is required.'; return; }
@@ -523,6 +528,87 @@ async function loadStatsList() {
             const { error: delError } = await db.from('stats').delete().eq('id', id);
             if (delError) { alert(delError.message); return; }
             loadStatsList();
+        });
+    });
+}
+
+
+// ===================== PROJECTS =====================
+
+function setupProjectsTab() {
+    const form = document.getElementById('projects-form');
+    document.getElementById('projects-add-btn').addEventListener('click', function () { openProjectForm(null); });
+    document.getElementById('projects-cancel-btn').addEventListener('click', function () { form.classList.add('hidden'); });
+    form.addEventListener('submit', saveProject);
+}
+
+function openProjectForm(p) {
+    document.getElementById('projects-form').classList.remove('hidden');
+    document.getElementById('projects-form-error').textContent = '';
+    document.getElementById('pr-form-id').value = p ? p.id : '';
+    document.getElementById('pr-title').value = p ? p.title : '';
+    document.getElementById('pr-status').value = p ? p.status : 'upcoming';
+    document.getElementById('pr-date').value = p && p.project_date ? p.project_date : '';
+    document.getElementById('pr-link').value = p ? p.link : '';
+    document.getElementById('pr-sort').value = p ? p.sort_order : 0;
+    document.getElementById('pr-desc').value = p ? p.description : '';
+}
+
+async function saveProject(e) {
+    e.preventDefault();
+    const errEl = document.getElementById('projects-form-error');
+    const id = document.getElementById('pr-form-id').value;
+    const link = document.getElementById('pr-link').value.trim();
+    const row = {
+        title: document.getElementById('pr-title').value.trim(),
+        status: document.getElementById('pr-status').value,
+        project_date: document.getElementById('pr-date').value || null,
+        link: link,
+        sort_order: parseInt(document.getElementById('pr-sort').value, 10) || 0,
+        description: document.getElementById('pr-desc').value.trim()
+    };
+    if (!row.title) { errEl.textContent = 'Title is required.'; return; }
+    if (link && !/^https?:\/\//i.test(link)) { errEl.textContent = 'Link must start with http:// or https://'; return; }
+
+    const result = id
+        ? await db.from('projects').update(row).eq('id', id)
+        : await db.from('projects').insert(row);
+
+    if (result.error) { errEl.textContent = result.error.message; return; }
+    document.getElementById('projects-form').classList.add('hidden');
+    loadProjectsList();
+}
+
+async function loadProjectsList() {
+    const list = document.getElementById('projects-admin-list');
+    const { data, error } = await db.from('projects').select('*').order('sort_order', { ascending: true });
+    if (error) { list.innerHTML = '<p class="admin-error">' + escapeHtml(error.message) + '</p>'; return; }
+    if (!data || data.length === 0) { list.innerHTML = '<p class="admin-empty">No projects yet.</p>'; return; }
+
+    list.innerHTML = data.map(function (p) {
+        return '<div class="admin-row" data-id="' + p.id + '">' +
+            '<div class="admin-row-info">' +
+                '<div class="admin-row-title">' + escapeHtml(p.title) + '</div>' +
+                '<div class="admin-row-sub">' + (p.status === 'done' ? 'Completed' : 'Upcoming') +
+                    (p.project_date ? ' &middot; ' + escapeHtml(p.project_date) : '') + '</div>' +
+                '<div class="admin-row-desc">' + escapeHtml(p.description) + '</div>' +
+            '</div>' +
+            '<div class="admin-row-actions">' +
+                '<button class="admin-btn ghost" data-action="edit">Edit</button>' +
+                '<button class="admin-btn danger" data-action="delete">Delete</button>' +
+            '</div>' +
+        '</div>';
+    }).join('');
+
+    list.querySelectorAll('.admin-row').forEach(function (row) {
+        const id = row.dataset.id;
+        const proj = data.find(function (p) { return p.id === id; });
+        row.querySelector('[data-action="edit"]').addEventListener('click', function () { openProjectForm(proj); });
+        row.querySelector('[data-action="delete"]').addEventListener('click', async function () {
+            if (!confirm('Delete this project?')) return;
+            const { error: delError } = await db.from('projects').delete().eq('id', id);
+            if (delError) { alert(delError.message); return; }
+            loadProjectsList();
         });
     });
 }

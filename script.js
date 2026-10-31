@@ -38,6 +38,7 @@ if (adminGrid && modalOverlay) {
     const modalRole = document.getElementById("admin-modal-role");
     const modalName = document.getElementById("admin-modal-name");
     const modalDesc = document.getElementById("admin-modal-desc");
+    const modalSocials = document.getElementById("admin-modal-socials");
     const modalClose = document.getElementById("admin-modal-close");
 
     var openAdminModal = function (card) {
@@ -46,6 +47,8 @@ if (adminGrid && modalOverlay) {
         modalRole.textContent = card.dataset.role;
         modalName.textContent = card.dataset.name;
         modalDesc.textContent = card.dataset.desc;
+        modalSocials.textContent = card.dataset.socials || "";
+        modalSocials.style.display = card.dataset.socials ? "block" : "none";
         modalOverlay.classList.add("active");
     };
 
@@ -67,7 +70,7 @@ async function loadAdmins() {
 
     const { data, error } = await db
         .from('admins')
-        .select('id, name, role, description, img, is_head')
+        .select('id, name, role, description, img, is_head, socials')
         .order('sort_order', { ascending: true });
 
     if (error) {
@@ -89,6 +92,7 @@ async function loadAdmins() {
         card.dataset.role = a.role;
         card.dataset.desc = a.description;
         card.dataset.img = a.img;
+        card.dataset.socials = a.socials || '';
 
         const img = document.createElement('img');
         img.src = a.img;
