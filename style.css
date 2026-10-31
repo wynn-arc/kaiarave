@@ -2521,3 +2521,87 @@ body.nav-locked {
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== Stats page ===== */
+.stats-wrap {
+    max-width: 720px;
+    width: 100%;
+    margin: 1.5rem auto 3rem;
+    padding: 0 1rem;
+}
+
+.stats-summary {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.stats-box {
+    flex: 1 1 220px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+    border-radius: 16px;
+    padding: 1.1rem 1rem;
+}
+
+.stats-box-num {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.stats-box-label {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-top: 0.2rem;
+}
+
+.stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.stats-row {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 0.85rem 1.1rem;
+    text-align: left;
+}
+
+.stats-title {
+    font-weight: 600;
+}
+
+.stats-nums {
+    font-size: 0.88rem;
+    opacity: 0.9;
+    margin-top: 0.15rem;
+}
+
+.stats-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.2);
+    margin-top: 0.6rem;
+    overflow: hidden;
+}
+
+.stats-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: #b8f2e6;
+}
+
+.stats-goal {
+    font-size: 0.78rem;
+    opacity: 0.8;
+    margin-top: 0.3rem;
+}
+
+.stats-updated {
+    margin-top: 1.25rem;
+    font-size: 0.8rem;
+    opacity: 0.75;
+}

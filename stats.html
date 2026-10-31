@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stats — ZAIA ST</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <div class="page-content">
+        <h1>YouTube Stats</h1>
+        <h2>How KAIA's songs are doing, and what we've added</h2>
+
+        <div class="stats-wrap">
+            <div class="stats-summary" id="stats-summary"></div>
+            <div class="stats-list" id="stats-list">
+                <p class="songs-loading">Loading stats...</p>
+            </div>
+            <p class="stats-updated" id="stats-updated"></p>
+        </div>
+    </div>
+
+    <script src="nav-loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="stats.js"></script>
+</body>
+</html>

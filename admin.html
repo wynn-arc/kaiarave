@@ -35,6 +35,7 @@
                 <button class="admin-tab-btn active" data-tab="members">Members</button>
                 <button class="admin-tab-btn" data-tab="discography">Discography</button>
                 <button class="admin-tab-btn" data-tab="admins">Admins</button>
+                <button class="admin-tab-btn" data-tab="stats">Stats</button>
                 <button class="admin-tab-btn" data-tab="comments">Comments</button>
             </div>
 
@@ -104,6 +105,24 @@
                     </div>
                 </form>
                 <div class="admin-row-list" id="admins-list"></div>
+            </section>
+
+            <section class="admin-section" id="tab-stats">
+                <button class="admin-btn primary" id="stats-add-btn">+ Add stat row</button>
+                <form class="admin-form hidden" id="stats-form">
+                    <input type="hidden" id="st-form-id">
+                    <div class="admin-field full-width"><label>Song / video title</label><input type="text" id="st-title"></div>
+                    <div class="admin-field"><label>YouTube views (current)</label><input type="number" min="0" id="st-yt" value="0"></div>
+                    <div class="admin-field"><label>Views added by team</label><input type="number" min="0" id="st-added" value="0"></div>
+                    <div class="admin-field"><label>Goal (optional)</label><input type="number" min="0" id="st-goal" placeholder="e.g. 1000000"></div>
+                    <div class="admin-field"><label>Sort order</label><input type="number" id="st-sort" value="0"></div>
+                    <p class="admin-error" id="stats-form-error"></p>
+                    <div class="admin-form-actions">
+                        <button type="button" class="admin-btn ghost" id="stats-cancel-btn">Cancel</button>
+                        <button type="submit" class="admin-btn primary">Save</button>
+                    </div>
+                </form>
+                <div class="admin-row-list" id="stats-admin-list"></div>
             </section>
 
             <section class="admin-section" id="tab-comments">

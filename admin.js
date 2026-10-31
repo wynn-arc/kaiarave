@@ -19,6 +19,7 @@ function init() {
     setupMembersTab();
     setupAlbumsTab();
     setupAdminsTab();
+    setupStatsTab();
 
     db.auth.getSession().then(function (res) {
         if (res.data.session) showAdmin();
@@ -62,6 +63,7 @@ function showAdmin() {
     loadMembers();
     loadAlbums();
     loadAdminsList();
+    loadStatsList();
     loadComments();
 }
 
@@ -444,4 +446,83 @@ async function deleteComment(id) {
     const { error } = await db.from('comments').delete().eq('id', id);
     if (error) { alert(error.message); return; }
     loadComments();
+}
+
+
+// ===================== STATS =====================
+
+function setupStatsTab() {
+    const form = document.getElementById('stats-form');
+    document.getElementById('stats-add-btn').addEventListener('click', function () { openStatForm(null); });
+    document.getElementById('stats-cancel-btn').addEventListener('click', function () { form.classList.add('hidden'); });
+    form.addEventListener('submit', saveStat);
+}
+
+function openStatForm(stat) {
+    document.getElementById('stats-form').classList.remove('hidden');
+    document.getElementById('stats-form-error').textContent = '';
+    document.getElementById('st-form-id').value = stat ? stat.id : '';
+    document.getElementById('st-title').value = stat ? stat.title : '';
+    document.getElementById('st-yt').value = stat ? stat.yt_views : 0;
+    document.getElementById('st-added').value = stat ? stat.added_views : 0;
+    document.getElementById('st-goal').value = stat && stat.goal != null ? stat.goal : '';
+    document.getElementById('st-sort').value = stat ? stat.sort_order : 0;
+}
+
+async function saveStat(e) {
+    e.preventDefault();
+    const errEl = document.getElementById('stats-form-error');
+    const id = document.getElementById('st-form-id').value;
+    const goalRaw = document.getElementById('st-goal').value.trim();
+    const row = {
+        title: document.getElementById('st-title').value.trim(),
+        yt_views: Math.max(0, parseInt(document.getElementById('st-yt').value, 10) || 0),
+        added_views: Math.max(0, parseInt(document.getElementById('st-added').value, 10) || 0),
+        goal: goalRaw ? Math.max(0, parseInt(goalRaw, 10) || 0) : null,
+        sort_order: parseInt(document.getElementById('st-sort').value, 10) || 0,
+        updated_at: new Date().toISOString()
+    };
+    if (!row.title) { errEl.textContent = 'Title is required.'; return; }
+
+    const result = id
+        ? await db.from('stats').update(row).eq('id', id)
+        : await db.from('stats').insert(row);
+
+    if (result.error) { errEl.textContent = result.error.message; return; }
+    document.getElementById('stats-form').classList.add('hidden');
+    loadStatsList();
+}
+
+async function loadStatsList() {
+    const list = document.getElementById('stats-admin-list');
+    const { data, error } = await db.from('stats').select('*').order('sort_order', { ascending: true });
+    if (error) { list.innerHTML = '<p class="admin-error">' + escapeHtml(error.message) + '</p>'; return; }
+    if (!data || data.length === 0) { list.innerHTML = '<p class="admin-empty">No stats yet.</p>'; return; }
+
+    list.innerHTML = data.map(function (r) {
+        return '<div class="admin-row" data-id="' + r.id + '">' +
+            '<div class="admin-row-info">' +
+                '<div class="admin-row-title">' + escapeHtml(r.title) + '</div>' +
+                '<div class="admin-row-sub">' + Number(r.yt_views).toLocaleString() + ' views &middot; +' +
+                    Number(r.added_views).toLocaleString() + ' added' +
+                    (r.goal ? ' &middot; goal ' + Number(r.goal).toLocaleString() : '') + '</div>' +
+            '</div>' +
+            '<div class="admin-row-actions">' +
+                '<button class="admin-btn ghost" data-action="edit">Edit</button>' +
+                '<button class="admin-btn danger" data-action="delete">Delete</button>' +
+            '</div>' +
+        '</div>';
+    }).join('');
+
+    list.querySelectorAll('.admin-row').forEach(function (row) {
+        const id = row.dataset.id;
+        const stat = data.find(function (r) { return r.id === id; });
+        row.querySelector('[data-action="edit"]').addEventListener('click', function () { openStatForm(stat); });
+        row.querySelector('[data-action="delete"]').addEventListener('click', async function () {
+            if (!confirm('Delete this stat row?')) return;
+            const { error: delError } = await db.from('stats').delete().eq('id', id);
+            if (delError) { alert(delError.message); return; }
+            loadStatsList();
+        });
+    });
 }
