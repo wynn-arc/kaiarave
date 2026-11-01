@@ -2964,3 +2964,27 @@ body.nav-locked {
         margin-bottom: 0.6rem;
     }
 }
+
+/* ===== Member "Follow" card ===== */
+.watch-follow-box {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+    border-radius: 14px;
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 1.25rem;
+}
+
+.follow-heading {
+    font-size: 1rem;
+    margin-bottom: 0.9rem;
+    text-align: left;
+}
+
+.watch-follow-box .social-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.watch-follow-box .social-pill {
+    padding: 0.5rem 1rem;
+}
