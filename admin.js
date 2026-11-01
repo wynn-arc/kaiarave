@@ -474,53 +474,148 @@ async function deleteComment(id) {
 
 // ===================== STATS =====================
 
+let editingStatId = null;
+
+function currentMonthValue() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
 function setupStatsTab() {
     const form = document.getElementById('stats-form');
     document.getElementById('stats-add-btn').addEventListener('click', function () { openStatForm(null); });
     document.getElementById('stats-cancel-btn').addEventListener('click', function () { form.classList.add('hidden'); });
+    document.getElementById('st-add-month-btn').addEventListener('click', function () { addMonthRow(currentMonthValue(), '', ''); });
+    document.getElementById('st-snap-month').value = currentMonthValue();
+    document.getElementById('st-snap-btn').addEventListener('click', snapshotAllStats);
     form.addEventListener('submit', saveStat);
 }
 
-function openStatForm(stat) {
+function addMonthRow(month, views, added) {
+    const wrap = document.getElementById('st-months');
+    const row = document.createElement('div');
+    row.className = 'admin-track-row st-month-row';
+    row.style.gridTemplateColumns = '1fr 1fr 1fr auto';
+    row.innerHTML =
+        '<input type="month" class="st-m-month" value="' + escapeHtml(month) + '">' +
+        '<input type="number" min="0" class="st-m-views" placeholder="YouTube views on the 1st" value="' + escapeHtml(views) + '">' +
+        '<input type="number" min="0" class="st-m-added" placeholder="Added views on the 1st" value="' + escapeHtml(added) + '">' +
+        '<button type="button" class="admin-btn danger">Remove</button>';
+    row.querySelector('button').addEventListener('click', function () { row.remove(); });
+    wrap.appendChild(row);
+}
+
+async function openStatForm(stat) {
     document.getElementById('stats-form').classList.remove('hidden');
     document.getElementById('stats-form-error').textContent = '';
+    editingStatId = stat ? stat.id : null;
     document.getElementById('st-form-id').value = stat ? stat.id : '';
     document.getElementById('st-title').value = stat ? stat.title : '';
     document.getElementById('st-yt').value = stat ? stat.yt_views : 0;
     document.getElementById('st-added').value = stat ? stat.added_views : 0;
     document.getElementById('st-goal').value = stat && stat.goal != null ? stat.goal : '';
     document.getElementById('st-sort').value = stat ? stat.sort_order : 0;
+    document.getElementById('st-url').value = stat ? (stat.video_url || '') : '';
+    document.getElementById('st-thumb').value = stat ? (stat.thumbnail || '') : '';
+
+    const wrap = document.getElementById('st-months');
+    wrap.innerHTML = '';
+    if (stat) {
+        const { data } = await db.from('stat_months').select('*').eq('stat_id', stat.id).order('month', { ascending: true });
+        (data || []).forEach(function (m) { addMonthRow(String(m.month).slice(0, 7), m.start_views, m.start_added); });
+    }
 }
 
 async function saveStat(e) {
     e.preventDefault();
     const errEl = document.getElementById('stats-form-error');
-    const id = document.getElementById('st-form-id').value;
     const goalRaw = document.getElementById('st-goal').value.trim();
+    const url = document.getElementById('st-url').value.trim();
+    const thumb = document.getElementById('st-thumb').value.trim();
+
     const row = {
         title: document.getElementById('st-title').value.trim(),
         yt_views: Math.max(0, parseInt(document.getElementById('st-yt').value, 10) || 0),
         added_views: Math.max(0, parseInt(document.getElementById('st-added').value, 10) || 0),
         goal: goalRaw ? Math.max(0, parseInt(goalRaw, 10) || 0) : null,
         sort_order: parseInt(document.getElementById('st-sort').value, 10) || 0,
+        video_url: url,
+        thumbnail: thumb,
         updated_at: new Date().toISOString()
     };
+
     if (!row.title) { errEl.textContent = 'Title is required.'; return; }
+    if (url && !/^https?:\/\//i.test(url)) { errEl.textContent = 'Video link must start with http:// or https://'; return; }
+    if (thumb && !/^(https?:\/\/|assets\/)/i.test(thumb)) { errEl.textContent = 'Thumbnail must be an https:// link or an assets/ path.'; return; }
 
-    const result = id
-        ? await db.from('stats').update(row).eq('id', id)
-        : await db.from('stats').insert(row);
+    const monthRows = Array.from(document.querySelectorAll('#st-months .st-month-row')).map(function (r) {
+        return {
+            month: r.querySelector('.st-m-month').value,
+            start_views: Math.max(0, parseInt(r.querySelector('.st-m-views').value, 10) || 0),
+            start_added: Math.max(0, parseInt(r.querySelector('.st-m-added').value, 10) || 0)
+        };
+    }).filter(function (m) { return m.month; });
 
-    if (result.error) { errEl.textContent = result.error.message; return; }
+    const seen = {};
+    for (const m of monthRows) {
+        if (seen[m.month]) { errEl.textContent = 'Each month can only appear once (' + m.month + ' is listed twice).'; return; }
+        seen[m.month] = true;
+    }
+
+    let statId = editingStatId;
+    if (statId) {
+        const { error } = await db.from('stats').update(row).eq('id', statId);
+        if (error) { errEl.textContent = error.message; return; }
+    } else {
+        const { data, error } = await db.from('stats').insert(row).select().single();
+        if (error) { errEl.textContent = error.message; return; }
+        statId = data.id;
+    }
+
+    // replace this video's monthly snapshots with what's in the form
+    const { error: delError } = await db.from('stat_months').delete().eq('stat_id', statId);
+    if (delError) { errEl.textContent = delError.message; return; }
+
+    if (monthRows.length > 0) {
+        const { error: insError } = await db.from('stat_months').insert(
+            monthRows.map(function (m) {
+                return { stat_id: statId, month: m.month + '-01', start_views: m.start_views, start_added: m.start_added };
+            })
+        );
+        if (insError) { errEl.textContent = insError.message; return; }
+    }
+
     document.getElementById('stats-form').classList.add('hidden');
     loadStatsList();
+}
+
+// Records every video's CURRENT numbers as the start of the chosen month.
+// Run this at the very start of a new month, before you update the totals.
+async function snapshotAllStats() {
+    const month = document.getElementById('st-snap-month').value;
+    const msg = document.getElementById('st-snap-msg');
+    msg.textContent = '';
+    if (!month) { msg.textContent = 'Pick a month first.'; return; }
+
+    if (!confirm('Record the current numbers of every video as the start of ' + month + '? ' +
+                 'Any snapshot already saved for that month will be replaced.')) return;
+
+    const { data, error } = await db.from('stats').select('id, yt_views, added_views');
+    if (error) { msg.textContent = error.message; return; }
+    if (!data || data.length === 0) { msg.textContent = 'There are no videos yet.'; return; }
+
+    const rows = data.map(function (s) {
+        return { stat_id: s.id, month: month + '-01', start_views: s.yt_views, start_added: s.added_views };
+    });
+    const { error: upError } = await db.from('stat_months').upsert(rows, { onConflict: 'stat_id,month' });
+    msg.textContent = upError ? upError.message : 'Saved the start-of-month snapshot for ' + data.length + ' video(s).';
 }
 
 async function loadStatsList() {
     const list = document.getElementById('stats-admin-list');
     const { data, error } = await db.from('stats').select('*').order('sort_order', { ascending: true });
     if (error) { list.innerHTML = '<p class="admin-error">' + escapeHtml(error.message) + '</p>'; return; }
-    if (!data || data.length === 0) { list.innerHTML = '<p class="admin-empty">No stats yet.</p>'; return; }
+    if (!data || data.length === 0) { list.innerHTML = '<p class="admin-empty">No videos yet.</p>'; return; }
 
     list.innerHTML = data.map(function (r) {
         return '<div class="admin-row" data-id="' + r.id + '">' +
@@ -528,7 +623,8 @@ async function loadStatsList() {
                 '<div class="admin-row-title">' + escapeHtml(r.title) + '</div>' +
                 '<div class="admin-row-sub">' + Number(r.yt_views).toLocaleString() + ' views &middot; +' +
                     Number(r.added_views).toLocaleString() + ' added' +
-                    (r.goal ? ' &middot; goal ' + Number(r.goal).toLocaleString() : '') + '</div>' +
+                    (r.goal ? ' &middot; goal ' + Number(r.goal).toLocaleString() : '') +
+                    (r.video_url ? ' &middot; has link' : ' &middot; no link yet') + '</div>' +
             '</div>' +
             '<div class="admin-row-actions">' +
                 '<button class="admin-btn ghost" data-action="edit">Edit</button>' +
@@ -542,14 +638,13 @@ async function loadStatsList() {
         const stat = data.find(function (r) { return r.id === id; });
         row.querySelector('[data-action="edit"]').addEventListener('click', function () { openStatForm(stat); });
         row.querySelector('[data-action="delete"]').addEventListener('click', async function () {
-            if (!confirm('Delete this stat row?')) return;
+            if (!confirm('Delete this video and its monthly history?')) return;
             const { error: delError } = await db.from('stats').delete().eq('id', id);
             if (delError) { alert(delError.message); return; }
             loadStatsList();
         });
     });
 }
-
 
 // ===================== PROJECTS =====================
 
