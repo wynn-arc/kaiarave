@@ -105,10 +105,19 @@ function openMemberForm(member) {
         document.getElementById('m-socials').value = member.socials;
         document.getElementById('m-sort').value = member.sort_order;
         document.getElementById('m-desc').value = member.description;
+        document.getElementById('m-stage').value = member.stage_name || '';
+        document.getElementById('m-birthname').value = member.birth_name || '';
+        document.getElementById('m-birthday').value = member.birthday || '';
+        document.getElementById('m-zodiac').value = member.zodiac || '';
+        document.getElementById('m-czodiac').value = member.chinese_zodiac || '';
+        document.getElementById('m-height').value = member.height || '';
+        document.getElementById('m-weight').value = member.weight || '';
+        document.getElementById('m-blood').value = member.blood_type || '';
+        document.getElementById('m-mbti').value = member.mbti || '';
     } else {
         document.getElementById('members-form-mode').value = 'create';
         idField.disabled = false;
-        ['m-id', 'm-name', 'm-role', 'm-img', 'm-avatar', 'm-socials', 'm-desc'].forEach(function (id) {
+        ['m-id', 'm-name', 'm-role', 'm-img', 'm-avatar', 'm-socials', 'm-desc', 'm-stage', 'm-birthname', 'm-birthday', 'm-zodiac', 'm-czodiac', 'm-height', 'm-weight', 'm-blood', 'm-mbti'].forEach(function (id) {
             document.getElementById(id).value = '';
         });
         document.getElementById('m-sort').value = 0;
@@ -127,7 +136,16 @@ async function saveMember(e) {
         avatar: document.getElementById('m-avatar').value.trim(),
         socials: document.getElementById('m-socials').value.trim(),
         sort_order: parseInt(document.getElementById('m-sort').value, 10) || 0,
-        description: document.getElementById('m-desc').value.trim()
+        description: document.getElementById('m-desc').value.trim(),
+        stage_name: document.getElementById('m-stage').value.trim(),
+        birth_name: document.getElementById('m-birthname').value.trim(),
+        birthday: document.getElementById('m-birthday').value.trim(),
+        zodiac: document.getElementById('m-zodiac').value.trim(),
+        chinese_zodiac: document.getElementById('m-czodiac').value.trim(),
+        height: document.getElementById('m-height').value.trim(),
+        weight: document.getElementById('m-weight').value.trim(),
+        blood_type: document.getElementById('m-blood').value.trim(),
+        mbti: document.getElementById('m-mbti').value.trim()
     };
 
     if (!id || !row.name) {

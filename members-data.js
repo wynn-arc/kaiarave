@@ -4,13 +4,14 @@ const membersData = {
         role: "Leader, Vocalist, Dancer",
         img: "assets/Angela.jpg",
         avatar: "🐻",
-        description: "Angela is the Leader one of the eldest members of KAIA, she debuted in KAIA along with her twin sister, Charice Hermoso. She is known for her puppy like visuals and her incredible vocal tone that is easily distinguishable due to it’s uniqueness. On stage, she stands out for her stable vocals and energetic dancing, paired with her enigmatic stage presence. She acts as the tying bond as the leader, and never hesitates to go all out for KAIA and ZAIA",
+        description: 
+            "Angela is the Leader one of the eldest members of KAIA, she debuted in KAIA along with her twin sister, Charice Hermoso. She is known for her puppy like visuals and her incredible vocal tone that is easily distinguishable due to it’s uniqueness. On stage, she stands out for her stable vocals and energetic dancing, paired with her enigmatic stage presence. She acts as the tying bond as the leader, and never hesitates to go all out for KAIA and ZAIA",
         socials: "@charlottehermoso__"
     },
     member2: {
         name: "Charice Hermoso",
         role: "Vocalist, Rapper, Dancer",
-        img: "assets/Charice.jpg",
+        img: "assets/Charice.jpg", 
         avatar: "🍒",
         description: "Charice is Angela’s twin sister. She is a rapper and dancer. On stage, she is full of energy and confidence. Her rap lines give KAIA a strong and powerful vibe. Off stage, she is playful and fun, which shows another side of her personality. Charice adds “swag” and attitude to the group’s performances.",
         socials: "@charicehermoso"

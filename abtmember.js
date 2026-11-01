@@ -15,7 +15,7 @@ async function loadMember() {
 
     const { data: member, error } = await db
         .from('members')
-        .select('id, name, role, img, avatar, description, socials')
+        .select('id, name, role, img, avatar, description, socials, stage_name, birth_name, birthday, zodiac, chinese_zodiac, height, weight, blood_type, mbti')
         .eq('id', memberId)
         .maybeSingle();
 
@@ -33,6 +33,36 @@ async function loadMember() {
     document.getElementById("member-role").textContent = member.role;
     document.getElementById("member-socials").textContent = member.socials;
     document.getElementById("member-desc").textContent = member.description;
+
+    // Profile facts (any field left blank in the admin panel is simply skipped)
+    const facts = [
+        ['Stage Name', member.stage_name],
+        ['Birth Name', member.birth_name],
+        ['Position', member.role],
+        ['Birthday', member.birthday],
+        ['Zodiac Sign', member.zodiac],
+        ['Chinese Zodiac Sign', member.chinese_zodiac],
+        ['Height', member.height],
+        ['Weight', member.weight],
+        ['Blood Type', member.blood_type],
+        ['MBTI Type', member.mbti],
+        ['Representative Emoji', member.avatar],
+        ['Instagram', member.socials]
+    ];
+    const factsEl = document.getElementById("member-facts");
+    factsEl.innerHTML = "";
+    let shown = 0;
+    facts.forEach(function (pair) {
+        if (!pair[1]) return;
+        const dt = document.createElement("dt");
+        dt.textContent = pair[0];
+        const dd = document.createElement("dd");
+        dd.textContent = pair[1];
+        factsEl.appendChild(dt);
+        factsEl.appendChild(dd);
+        shown++;
+    });
+    document.getElementById("member-facts-box").style.display = shown ? "block" : "none";
 
     buildSidebar(db, member.id);
 }
