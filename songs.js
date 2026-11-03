@@ -2,6 +2,27 @@ document.addEventListener('DOMContentLoaded', function () {
     loadAlbums();
 });
 
+/* ---------- Small helpers ---------- */
+function h(tag, className, text) {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (text !== undefined) el.textContent = text;
+    return el;
+}
+
+function clamp01(n) {
+    return Math.max(0, Math.min(1, n));
+}
+
+function makeDisc() {
+    const disc = h('div', 'vs-disc');
+    const spin = h('div', 'vs-disc-spin');
+    spin.appendChild(h('div', 'vs-label'));
+    disc.appendChild(spin);
+    return disc;
+}
+
+/* ---------- Load data (same Supabase queries as before) ---------- */
 async function loadAlbums() {
     const grid = document.getElementById('albums-grid');
     const db = getSupabaseClient();
@@ -42,145 +63,281 @@ async function loadAlbums() {
     });
 
     grid.innerHTML = '';
-    albums.forEach(function (album) {
-        grid.appendChild(buildAlbumCard(album, tracksByAlbum[album.id] || []));
+    let groupNo = 0;
+    grid.appendChild(buildBooks(groupNo++, false));
+    albums.forEach(function (album, i) {
+        grid.appendChild(buildSlot(album, tracksByAlbum[album.id] || []));
+        const isLast = i === albums.length - 1;
+        if (isLast) {
+            grid.appendChild(buildBooks(groupNo++, false));
+        } else if ((i + 1) % 3 === 0) {
+            grid.appendChild(buildBooks(groupNo++, true));
+        }
     });
-
-    attachAlbumHandlers();
 }
 
-function buildAlbumCard(album, tracks) {
-    const card = document.createElement('div');
-    card.className = 'album-card';
-    card.style.setProperty('--album-color', album.color || '#a78bfa');
+/* ---------- Decorative (non-clickable) books ---------- */
+const BOOK_COLORS = ['#3f6b5e', '#8a4b3d', '#c9a45c', '#4a5d8a', '#7a3e55', '#d8c9a8', '#2f4a4a', '#b5654a', '#5b4a7a', '#6f7f4a'];
 
-    const trackCount = tracks.length;
-    const hint = trackCount === 1 ? '1 track' : trackCount + ' tracks';
-
-    const coverBack = document.createElement('div');
-    coverBack.className = 'album-cover-back';
-    if (album.cover_image) coverBack.style.backgroundImage = "url('" + album.cover_image + "')";
-
-    const coverWrap = document.createElement('div');
-    coverWrap.className = 'album-cover-wrap';
-    coverWrap.appendChild(coverBack);
-    const cover = document.createElement('div');
-    cover.className = 'album-cover';
-    cover.textContent = '💿';
-    coverWrap.appendChild(cover);
-
-    const title = document.createElement('h3');
-    title.className = 'album-title';
-    title.textContent = album.title;
-
-    const hintEl = document.createElement('span');
-    hintEl.className = 'album-hint';
-    hintEl.textContent = hint;
-
-    const list = document.createElement('ul');
-    list.className = 'album-songs';
-    tracks.forEach(function (t) {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = t.url;
-        a.textContent = t.title;
-        li.appendChild(a);
-        list.appendChild(li);
-    });
-
-    card.appendChild(coverWrap);
-    card.appendChild(title);
-    card.appendChild(hintEl);
-    card.appendChild(list);
-    return card;
+// Seeded so the arrangement is the same on every visit
+function seededRandom(seed) {
+    let a = (seed + 1) * 2654435761;
+    return function () {
+        a |= 0; a = (a + 0x6D2B79F5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
 }
 
-function attachAlbumHandlers() {
-    const cards = document.querySelectorAll('.album-card');
+function buildBooks(seed, isMid) {
+    const rand = seededRandom(seed * 7 + 3);
+    const slot = h('div', 'vs-slot vs-deco' + (isMid ? ' vs-books-mid' : ''));
+    slot.setAttribute('aria-hidden', 'true');
 
-    cards.forEach(function (card) {
-        card.setAttribute('tabindex', '0');
-        card.setAttribute('role', 'button');
-        card.setAttribute('aria-label', 'Open ' + card.querySelector('.album-title').textContent);
+    const wrap = h('div', 'vs-books');
+    const count = 3 + Math.floor(rand() * 4); // 3-6 books
+    for (let i = 0; i < count; i++) {
+        const book = h('i', 'vs-book v' + (1 + Math.floor(rand() * 3)));
+        book.style.setProperty('--c', BOOK_COLORS[Math.floor(rand() * BOOK_COLORS.length)]);
+        book.style.setProperty('--h', (0.7 + rand() * 0.36).toFixed(2));
+        book.style.setProperty('--w', (0.1 + rand() * 0.07).toFixed(3));
+        if (i === count - 1 && count >= 4 && rand() > 0.45) book.classList.add('lean');
+        wrap.appendChild(book);
+    }
 
-        card.addEventListener('click', function () {
-            openAlbum(card);
-        });
+    slot.appendChild(wrap);
+    slot.appendChild(h('div', 'vs-plank'));
+    return slot;
+}
 
-        card.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                openAlbum(card);
+/* ---------- One record on the shelf ---------- */
+function buildSlot(album, tracks) {
+    const slot = h('div', 'vs-slot');
+    slot.style.setProperty('--album-color', album.color || '#a78bfa');
+
+    const pick = h('button', 'vs-pick');
+    pick.type = 'button';
+    pick.setAttribute('aria-label', 'Play ' + album.title);
+
+    const disc = makeDisc();
+    disc.classList.add('vs-disc-shelf');
+
+    const sleeve = h('div', 'vs-sleeve');
+    if (album.cover_image) {
+        sleeve.style.backgroundImage = 'url("' + String(album.cover_image).replace(/"/g, '%22') + '")';
+    } else {
+        sleeve.appendChild(h('span', 'vs-sleeve-title', album.title));
+    }
+
+    pick.appendChild(disc);
+    pick.appendChild(sleeve);
+
+    const plank = h('div', 'vs-plank');
+    plank.appendChild(h('span', '', album.title));
+
+    slot.appendChild(pick);
+    slot.appendChild(plank);
+
+    pick.addEventListener('click', function () {
+        openPlayer(album, tracks, slot);
+    });
+
+    return slot;
+}
+
+/* ---------- The turntable ---------- */
+function openPlayer(album, tracks, slot) {
+    if (document.querySelector('.vs-player')) return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const color = album.color || '#a78bfa';
+    const pick = slot.querySelector('.vs-pick');
+    const shelfDisc = slot.querySelector('.vs-disc');
+    const sleeve = slot.querySelector('.vs-sleeve');
+
+    // Needle angles (degrees). Rest = parked, LEAD = outer edge of the record,
+    // tracks are spread from FIRST (outer groove) to LAST (inner groove).
+    const ARM_REST = 3;
+    const ARM_LEAD = 23;
+    const ARM_FIRST = 27;
+    const ARM_LAST = 41;
+
+    function armFor(i) {
+        if (tracks.length <= 1) return 32;
+        return ARM_FIRST + (ARM_LAST - ARM_FIRST) * (i / (tracks.length - 1));
+    }
+
+    /* Build overlay */
+    const overlay = h('div', 'vs-player');
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', album.title);
+    overlay.style.setProperty('--album-color', color);
+
+    const backdrop = h('div', 'vs-backdrop');
+
+    const closeBtn = h('button', 'vs-close vs-fade', '×');
+    closeBtn.type = 'button';
+    closeBtn.setAttribute('aria-label', 'Put the record back');
+
+    const stage = h('div', 'vs-stage');
+
+    const frame = h('div', 'vs-deck-frame');
+    const deck = h('div', 'vs-deck');
+
+    const fadeParts = ['vs-plinth', 'vs-platter'];
+    fadeParts.forEach(function (c) { deck.appendChild(h('div', c + ' vs-fade')); });
+
+    const holder = h('div', 'vs-record');
+    holder.appendChild(makeDisc());
+    deck.appendChild(holder);
+
+    ['vs-spindle', 'vs-rest', 'vs-arm-base', 'vs-arm'].forEach(function (c) {
+        deck.appendChild(h('div', c + ' vs-fade'));
+    });
+    frame.appendChild(deck);
+
+    /* Track list */
+    const info = h('div', 'vs-info vs-fade');
+    info.appendChild(h('div', 'vs-info-title', album.title));
+    info.appendChild(h('p', 'vs-info-count', tracks.length === 1 ? '1 track' : tracks.length + ' tracks'));
+
+    let current = -1;
+    let armed = false;
+    const trackLinks = [];
+
+    function applyArm() {
+        let deg = ARM_REST;
+        if (armed) deg = current >= 0 ? armFor(current) : ARM_LEAD;
+        deck.style.setProperty('--arm', deg + 'deg');
+    }
+
+    if (tracks.length === 0) {
+        info.appendChild(h('p', 'vs-empty', 'No tracks have been added to this album yet.'));
+    } else {
+        const list = h('ol', 'vs-tracklist');
+        tracks.forEach(function (t, i) {
+            const li = document.createElement('li');
+            const a = h('a', 'vs-track');
+            if (t.url) {
+                a.href = t.url;
+                a.target = '_blank';
+                a.rel = 'noopener';
             }
+            a.appendChild(h('span', 'vs-track-num', String(i + 1)));
+            a.appendChild(h('span', 'vs-track-title', t.title));
+            a.addEventListener('click', function () {
+                current = i;
+                trackLinks.forEach(function (l, j) { l.classList.toggle('is-active', j === i); });
+                applyArm();
+            });
+            trackLinks.push(a);
+            li.appendChild(a);
+            list.appendChild(li);
         });
-    });
-}
+        info.appendChild(list);
+        info.appendChild(h('p', 'vs-info-hint', 'Pick a track to move the needle and open it in a new tab.'));
+    }
 
-function openAlbum(card) {
-    const color = card.style.getPropertyValue('--album-color') || '#a78bfa';
-    const icon = card.querySelector('.album-cover').textContent.trim();
-    const title = card.querySelector('.album-title').textContent.trim();
-    const songLinks = Array.from(card.querySelectorAll('.album-songs a'));
+    stage.appendChild(frame);
+    stage.appendChild(info);
+    overlay.appendChild(backdrop);
+    overlay.appendChild(closeBtn);
+    overlay.appendChild(stage);
 
-    const coverBack = card.querySelector('.album-cover-back');
-    const coverImage = coverBack ? coverBack.style.backgroundImage : '';
-
-    if (songLinks.length === 0) return;
-
-    const stemLines = songLinks
-        .map(function (a, i) {
-            return '<div class="stem-line" style="--i:' + i + '"></div>';
-        })
-        .join('');
-
-    const stemNodes = songLinks
-        .map(function (a, i) {
-            const href = a.getAttribute('href') || '#';
-            const label = a.textContent.trim();
-            return (
-                '<div class="stem-node" style="--i:' + i + '">' +
-                '<a href="' + href + '" target="_blank" rel="noopener">' + label + '</a>' +
-                '</div>'
-            );
-        })
-        .join('');
-
-    const overlay = document.createElement('div');
-    overlay.className = 'album-overlay';
-    overlay.innerHTML =
-        '<div class="album-overlay-backdrop"></div>' +
-        '<div class="album-expanded" style="--album-color:' + color + '">' +
-        '<button class="album-close" aria-label="Close">&times;</button>' +
-        '<div class="stem-wrap" style="--total:' + songLinks.length + '">' +
-        '<div class="album-cover-big-wrap">' +
-        '<div class="album-cover-back-big"></div>' +
-        '<div class="album-cover-big">' + icon + '</div>' +
-        '</div>' +
-        stemLines +
-        stemNodes +
-        '</div>' +
-        '<h2 class="expanded-title">' + title + '</h2>' +
-        '</div>';
-
-    if (coverImage) {
-        const backBig = overlay.querySelector('.album-cover-back-big');
-        if (backBig) backBig.style.backgroundImage = coverImage;
+    /* Scale the deck to fit narrow screens */
+    function fit() {
+        const s = Math.min(1, (window.innerWidth - 40) / 440);
+        frame.style.setProperty('--s', s.toFixed(3));
     }
 
     document.body.appendChild(overlay);
     document.body.style.overflow = 'hidden';
+    fit();
+    window.addEventListener('resize', fit);
 
-    function closeOverlay() {
+    /* Lift the record off the shelf and onto the platter */
+    const fromRect = shelfDisc.getBoundingClientRect();
+    const sleeveRect = sleeve.getBoundingClientRect();
+    const peek = clamp01((sleeveRect.top - fromRect.top) / fromRect.height);
+    const toRect = holder.getBoundingClientRect();
+
+    function moveTransform(from, to) {
+        const dx = (from.left + from.width / 2) - (to.left + to.width / 2);
+        const dy = (from.top + from.height / 2) - (to.top + to.height / 2);
+        return 'translate(' + dx + 'px, ' + dy + 'px) scale(' + (from.width / to.width) + ')';
+    }
+
+    slot.classList.add('is-out');
+    requestAnimationFrame(function () { overlay.classList.add('is-in'); });
+
+    let flight = holder.animate(
+        [
+            { transform: moveTransform(fromRect, toRect), clipPath: 'inset(0 0 ' + (1 - peek) * 100 + '% 0)' },
+            { transform: 'none', clipPath: 'inset(0 0 0% 0)' }
+        ],
+        { duration: reduce ? 1 : 850, easing: 'cubic-bezier(0.3, 0.7, 0.2, 1)' }
+    );
+
+    let closing = false;
+    let timers = [];
+
+    flight.finished.then(function () {
+        if (closing) return;
+        overlay.classList.add('is-spinning');
+        timers.push(setTimeout(function () {
+            if (closing) return;
+            armed = true;
+            applyArm();
+        }, reduce ? 0 : 350));
+    }).catch(function () {});
+
+    closeBtn.focus({ preventScroll: true });
+
+    /* Close: lift the needle, then send the record back to its sleeve */
+    function finish() {
         overlay.remove();
+        slot.classList.remove('is-out');
         document.body.style.overflow = '';
-        document.removeEventListener('keydown', escHandler);
+        document.removeEventListener('keydown', onKey);
+        window.removeEventListener('resize', fit);
+        pick.focus({ preventScroll: true });
     }
 
-    function escHandler(e) {
-        if (e.key === 'Escape') closeOverlay();
+    function close() {
+        if (closing) return;
+        closing = true;
+        timers.forEach(clearTimeout);
+        if (flight && flight.playState === 'running') flight.finish();
+
+        armed = false;
+        applyArm();
+        overlay.classList.remove('is-spinning');
+        overlay.classList.remove('is-in');
+
+        timers.push(setTimeout(function () {
+            const back = shelfDisc.getBoundingClientRect();
+            const sl = sleeve.getBoundingClientRect();
+            const backPeek = clamp01((sl.top - back.top) / back.height);
+            const here = holder.getBoundingClientRect();
+
+            const homeFlight = holder.animate(
+                [
+                    { transform: 'none', clipPath: 'inset(0 0 0% 0)' },
+                    { transform: moveTransform(back, here), clipPath: 'inset(0 0 ' + (1 - backPeek) * 100 + '% 0)' }
+                ],
+                { duration: reduce ? 1 : 800, easing: 'cubic-bezier(0.5, 0, 0.2, 1)', fill: 'forwards' }
+            );
+            homeFlight.finished.then(finish).catch(finish);
+        }, reduce ? 0 : 650));
     }
 
-    overlay.querySelector('.album-overlay-backdrop').addEventListener('click', closeOverlay);
-    overlay.querySelector('.album-close').addEventListener('click', closeOverlay);
-    document.addEventListener('keydown', escHandler);
+    function onKey(e) {
+        if (e.key === 'Escape') close();
+    }
+
+    closeBtn.addEventListener('click', close);
+    backdrop.addEventListener('click', close);
+    document.addEventListener('keydown', onKey);
 }

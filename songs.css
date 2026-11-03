@@ -1,0 +1,699 @@
+/* ==========================================================
+   Discography: vinyl shelf + turntable player
+   Load this AFTER style.css. Everything is prefixed "vs-" so it
+   can't clash with the old .album-* rules (you can delete those
+   from style.css once you're happy with this).
+   ========================================================== */
+
+/* ---------- The shelf ---------- */
+/* The bookcase: crown on top, side panels, boards, base + feet */
+.vs-case {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 0 38px;
+}
+
+.vs-case::before { /* top crown, overhangs the sides */
+    content: "";
+    position: relative;
+    z-index: 3;
+    display: block;
+    height: 22px;
+    margin: 0 -10px;
+    border-radius: 6px 6px 2px 2px;
+    background: linear-gradient(#f7e6c2, #e0c18f 55%, #b88f58);
+    box-shadow: 0 5px 10px rgba(70, 45, 20, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.vs-base { /* plinth + feet */
+    position: absolute;
+    left: -6px;
+    right: -6px;
+    bottom: 12px;
+    height: 26px;
+    border-radius: 2px 2px 3px 3px;
+    background: linear-gradient(#e0c18f, #b58b55);
+    box-shadow: 0 5px 8px rgba(70, 45, 20, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+
+.vs-base::after { /* soft floor shadow */
+    content: "";
+    position: absolute;
+    left: 3%;
+    right: 3%;
+    bottom: -26px;
+    height: 16px;
+    background: radial-gradient(ellipse at center, rgba(30, 18, 6, 0.4), transparent 70%);
+    pointer-events: none;
+}
+
+.vs-base i {
+    position: absolute;
+    bottom: -12px;
+    width: 38px;
+    height: 14px;
+    background: linear-gradient(#a37c47, #7c5a30);
+    border-radius: 0 0 5px 5px;
+}
+.vs-base i:first-child { left: 26px; }
+.vs-base i:last-child { right: 26px; }
+
+.vs-shelf {
+    --sz: clamp(104px, 15vw, 156px);
+    --plank-h: 46px;
+    /* top surface (receding) -> bright front edge -> front face */
+    --plank-bg: linear-gradient(
+        to bottom,
+        #bd9a6a 0,
+        #d9bc8c 10px,
+        #ecd5a9 16px,
+        #f8e9c6 16px 18px,
+        #d8b57f 18px,
+        #b98f58 calc(100% - 2px),
+        #8f6b3d 100%
+    );
+
+    width: 100%;
+    padding: 0 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: flex-start;
+    text-align: left;
+
+    /* side panels */
+    border: solid #d6b47d;
+    border-width: 0 16px;
+    border-image: linear-gradient(90deg, #c39d66, #e6c999 45%, #cfab74) 1;
+    background:
+        repeating-linear-gradient(90deg, rgba(140, 100, 55, 0.07) 0 2px, transparent 2px 9px),
+        #f1e6d2;
+    box-shadow:
+        inset 0 18px 24px -6px rgba(110, 75, 35, 0.4),
+        inset 14px 0 18px -8px rgba(110, 75, 35, 0.32),
+        inset -14px 0 18px -8px rgba(110, 75, 35, 0.32);
+}
+
+/* Fills the rest of the last row so the plank always reaches the edge */
+.vs-shelf::after {
+    content: "";
+    flex: 1 1 0;
+    min-width: 0;
+    height: var(--plank-h);
+    background: var(--plank-bg);
+    box-shadow: 0 6px 10px rgba(90, 60, 30, 0.35);
+}
+
+.vs-shelf .songs-loading {
+    width: 100%;
+    padding: 3rem 1rem 2rem;
+    color: #5a3a1c;
+}
+
+.vs-slot {
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--sz) * 0.42) 12px 0;
+}
+
+/* The record + sleeve is one button */
+.vs-pick {
+    position: relative;
+    z-index: 2;
+    align-self: center;
+    width: var(--sz);
+    height: var(--sz);
+    margin-bottom: -11px; /* stands on the board's top surface */
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.vs-pick::before { /* contact shadow on the board */
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: -2%;
+    right: -9%;
+    bottom: -7px;
+    height: 14px;
+    background: radial-gradient(ellipse at center, rgba(50, 30, 10, 0.5), transparent 70%);
+}
+
+.vs-pick:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+}
+
+.vs-sleeve {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: 3px 5px 5px 3px;
+    background-color: var(--album-color, #a78bfa);
+    background-size: cover;
+    background-position: center;
+    /* page-block edge on the right gives it the thickness of a book / case */
+    box-shadow:
+        0 0 0 1px rgba(40, 25, 10, 0.4),
+        3px 0 0 #f4ecdc,
+        4px 0 0 rgba(40, 25, 10, 0.3),
+        6px 0 0 #d8ccb5,
+        7px 0 0 rgba(40, 25, 10, 0.3),
+        8px 10px 16px rgba(60, 35, 15, 0.45);
+    transition: filter 0.2s;
+    overflow: hidden;
+}
+
+/* Spine band + hinge groove down the left edge */
+.vs-sleeve::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 13%;
+    pointer-events: none;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.32) 0,
+        rgba(0, 0, 0, 0.14) 66%,
+        rgba(0, 0, 0, 0.38) 72%,
+        rgba(255, 255, 255, 0.3) 78%,
+        transparent 100%
+    );
+}
+
+/* Edge shading + glossy cover finish */
+.vs-sleeve::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(115deg, rgba(255, 255, 255, 0.18), transparent 38%),
+        linear-gradient(90deg, transparent 94%, rgba(0, 0, 0, 0.18));
+}
+
+.vs-sleeve-title {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 0.7rem 0.7rem 0.7rem 17%;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #fff;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+    overflow-wrap: anywhere;
+}
+
+.vs-pick:hover .vs-sleeve,
+.vs-pick:focus-visible .vs-sleeve {
+    filter: brightness(1.08);
+}
+
+/* The record peeking out of the top of the sleeve */
+.vs-disc-shelf {
+    position: absolute;
+    z-index: 0;
+    left: 4%;
+    top: 0;
+    width: 92%;
+    transform: translateY(-20%);
+    transition: transform 0.35s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.vs-pick:hover .vs-disc-shelf,
+.vs-pick:focus-visible .vs-disc-shelf {
+    transform: translateY(-36%);
+}
+
+.vs-slot.is-out .vs-disc-shelf {
+    visibility: hidden;
+}
+
+/* Title lives on the front edge of the plank */
+.vs-plank {
+    height: var(--plank-h);
+    padding: 18px 0.5rem 0;
+    background: var(--plank-bg);
+    box-shadow: 0 6px 10px rgba(90, 60, 30, 0.35);
+}
+
+.vs-plank span {
+    display: block;
+    font-size: 0.74rem;
+    line-height: 26px;
+    font-size: 0.72rem;
+    text-align: center;
+    color: #4a2f17;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ---------- Decorative books (not clickable) ---------- */
+.vs-deco {
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--sz) * 0.42) 8px 0;
+    pointer-events: none;
+}
+
+.vs-books {
+    position: relative;
+    z-index: 2;
+    align-self: center;
+    display: flex;
+    align-items: flex-end;
+    height: var(--sz);
+    margin-bottom: -11px;
+}
+
+.vs-book {
+    position: relative;
+    flex: none;
+    width: calc(var(--sz) * var(--w));
+    height: calc(var(--sz) * var(--h));
+    background-color: var(--c);
+    border-radius: 2px 2px 1px 1px;
+    box-shadow: 2px 3px 5px rgba(50, 30, 10, 0.4);
+    background-image:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.2) 22%, transparent 45%, rgba(0, 0, 0, 0.28)),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.12), transparent 25%);
+}
+
+/* gold bands near the top and bottom of the spine */
+.vs-book::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 9%;
+    height: 14%;
+    border-top: 2px solid rgba(240, 215, 150, 0.85);
+    border-bottom: 2px solid rgba(240, 215, 150, 0.85);
+    opacity: 0.85;
+}
+
+.vs-book::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8%;
+    height: 2px;
+    background: rgba(240, 215, 150, 0.85);
+}
+
+/* variants */
+.vs-book.v2::before { /* title label */
+    left: 18%;
+    right: 18%;
+    top: 22%;
+    height: 34%;
+    border: 0;
+    background: #f1e6cc;
+    opacity: 0.92;
+    border-radius: 1px;
+}
+.vs-book.v3::before { display: none; }
+.vs-book.v3::after { bottom: 14%; height: 5px; border-top: 1px solid rgba(240, 215, 150, 0.85); border-bottom: 1px solid rgba(240, 215, 150, 0.85); background: none; }
+
+.vs-book.lean {
+    transform: rotate(9deg);
+    transform-origin: bottom left;
+    margin-left: 3px;
+    margin-right: calc(var(--sz) * 0.08);
+}
+
+/* ---------- Vinyl (shared by shelf + turntable) ---------- */
+.vs-disc {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #0c0c0e;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.vs-disc-spin {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+        conic-gradient(rgba(255, 255, 255, 0.06) 0 6%, transparent 6% 50%, rgba(255, 255, 255, 0.06) 50% 56%, transparent 56%),
+        repeating-radial-gradient(circle at center, #101013 0 1.5px, #1a1a1e 1.5px 2.5px);
+    animation: vs-spin 1.8s linear infinite;
+    animation-play-state: paused;
+}
+
+/* Light reflection stays still while the record turns */
+.vs-disc::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    background: conic-gradient(
+        from 35deg,
+        transparent 0 18%,
+        rgba(255, 255, 255, 0.14) 25%,
+        transparent 32% 68%,
+        rgba(255, 255, 255, 0.14) 75%,
+        transparent 82%
+    );
+}
+
+.vs-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 34%;
+    height: 34%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--album-color, #a78bfa);
+    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.vs-label::before { /* notch so you can see it spin */
+    content: "";
+    position: absolute;
+    top: 13%;
+    left: 50%;
+    width: 9%;
+    height: 9%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.75);
+}
+
+.vs-label::after { /* spindle hole */
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 9%;
+    height: 9%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #0c0c0e;
+}
+
+@keyframes vs-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ---------- Turntable overlay ---------- */
+.vs-player {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    padding: 4.5rem 1rem 2rem;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.vs-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 18, 13, 0.9);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+}
+
+.vs-fade {
+    opacity: 0;
+    transition: opacity 0.45s ease;
+}
+
+.vs-player.is-in .vs-backdrop,
+.vs-player.is-in .vs-fade {
+    opacity: 1;
+}
+
+.vs-close {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 5;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-size: 1.7rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.vs-close:hover { background: rgba(255, 255, 255, 0.26); }
+.vs-close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+.vs-stage {
+    position: relative;
+    margin: auto;
+    max-width: 960px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem 3rem;
+}
+
+/* Deck is designed at 440 x 380 and scaled down on small screens */
+.vs-deck-frame {
+    flex: none;
+    width: calc(440px * var(--s, 1));
+    height: calc(380px * var(--s, 1));
+}
+
+.vs-deck {
+    --arm: 3deg;
+    position: relative;
+    width: 440px;
+    height: 380px;
+    transform: scale(var(--s, 1));
+    transform-origin: 0 0;
+}
+
+.vs-plinth {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background:
+        repeating-linear-gradient(95deg, rgba(0, 0, 0, 0.07) 0 3px, transparent 3px 11px),
+        linear-gradient(160deg, #54341d, #2b1a0f);
+    box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.6),
+        inset 0 2px 0 rgba(255, 255, 255, 0.14),
+        inset 0 0 0 2px rgba(0, 0, 0, 0.25);
+}
+
+.vs-platter {
+    position: absolute;
+    left: 40px;
+    top: 50px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #2d2d32 0 62%, #1a1a1e 63% 95%, #44444c 96% 98%, #1a1a1e 99%);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6);
+}
+
+.vs-record {
+    position: absolute;
+    z-index: 3;
+    left: 50px;
+    top: 60px;
+    width: 280px;
+    height: 280px;
+}
+
+.vs-record .vs-disc {
+    width: 100%;
+    height: 100%;
+}
+
+.vs-player.is-spinning .vs-disc-spin {
+    animation-play-state: running;
+}
+
+.vs-spindle {
+    position: absolute;
+    z-index: 4;
+    left: 184px;
+    top: 194px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff, #8b9097 60%, #4d5057);
+}
+
+.vs-rest {
+    position: absolute;
+    left: 380px;
+    top: 290px;
+    width: 14px;
+    height: 24px;
+    border-radius: 4px;
+    background: #1d1d21;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.vs-arm-base {
+    position: absolute;
+    z-index: 5;
+    left: 373px;
+    top: 23px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #f1f3f5, #9aa0a8 55%, #5a5e66);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55);
+}
+
+.vs-arm {
+    position: absolute;
+    z-index: 6;
+    left: 396px;
+    top: 50px;
+    width: 8px;
+    height: 246px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #9ea3aa, #eef0f3, #8b9097);
+    box-shadow: 3px 4px 8px rgba(0, 0, 0, 0.45);
+    transform-origin: 4px 0;
+    transform: rotate(var(--arm));
+    transition: transform 1s cubic-bezier(0.45, 0.05, 0.25, 1), opacity 0.45s ease;
+}
+
+.vs-arm::before { /* counterweight */
+    content: "";
+    position: absolute;
+    left: -7px;
+    top: -34px;
+    width: 22px;
+    height: 36px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #2a2a2f, #55555d, #26262b);
+}
+
+.vs-arm::after { /* headshell */
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 232px;
+    width: 20px;
+    height: 32px;
+    border-radius: 3px 3px 6px 6px;
+    background: linear-gradient(90deg, #17171a, #3a3a41, #17171a);
+    border-bottom: 3px solid #c9ced4;
+}
+
+/* ---------- Track list ---------- */
+.vs-info {
+    flex: 1 1 280px;
+    min-width: 260px;
+    max-width: 340px;
+}
+
+.vs-info-title {
+    font-family: 'Allura', cursive;
+    font-size: 3rem;
+    line-height: 1.05;
+    font-weight: 400;
+    text-shadow: 0 0 18px rgba(200, 255, 245, 0.6);
+    overflow-wrap: anywhere;
+}
+
+.vs-info-count {
+    margin-top: 0.3rem;
+    font-size: 0.9rem;
+    opacity: 0.75;
+}
+
+.vs-tracklist {
+    list-style: none;
+    margin-top: 1.1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.vs-track {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    align-items: baseline;
+    padding: 0.75rem 0.5rem;
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    transition: background 0.2s;
+}
+
+.vs-track-num {
+    font-size: 0.82rem;
+    opacity: 0.6;
+    font-variant-numeric: tabular-nums;
+}
+
+.vs-track:hover,
+.vs-track:focus-visible {
+    background: rgba(255, 255, 255, 0.09);
+    outline: none;
+}
+
+.vs-track.is-active {
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.12);
+    background: color-mix(in srgb, var(--album-color, #a78bfa) 38%, transparent);
+}
+
+.vs-info-hint,
+.vs-empty {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    opacity: 0.75;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 640px) {
+    .vs-shelf {
+        --sz: clamp(88px, 24vw, 120px);
+        padding: 0 8px;
+        border-width: 0 9px;
+    }
+
+    .vs-books-mid { display: none; }
+
+    .vs-slot {
+        padding-left: 7px;
+        padding-right: 7px;
+    }
+
+    .vs-info-title { font-size: 2.5rem; }
+    .vs-stage { gap: 1.5rem; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .vs-disc-spin { animation: none; }
+    .vs-disc-shelf,
+    .vs-arm,
+    .vs-backdrop,
+    .vs-fade { transition: none; }
+}
