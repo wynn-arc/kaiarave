@@ -685,6 +685,19 @@
         padding-right: 7px;
     }
 
+    /* Center the case on the screen and keep its overhang inside the viewport */
+    .vs-case {
+        width: calc(100% - 28px);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .vs-slot {
+        flex: 1 1 auto;
+    }
+
+    .vs-shelf::after { display: none; }
+
     .vs-info-title { font-size: 2.5rem; }
     .vs-stage { gap: 1.5rem; }
 }
