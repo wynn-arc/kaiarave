@@ -495,7 +495,6 @@ function addMonthRow(month, views, added) {
     const wrap = document.getElementById('st-months');
     const row = document.createElement('div');
     row.className = 'admin-track-row st-month-row';
-    row.style.gridTemplateColumns = '1fr 1fr 1fr auto';
     row.innerHTML =
         '<input type="month" class="st-m-month" value="' + escapeHtml(month) + '">' +
         '<input type="number" min="0" class="st-m-views" placeholder="YouTube views on the 1st" value="' + escapeHtml(views) + '">' +
